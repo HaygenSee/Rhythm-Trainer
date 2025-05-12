@@ -3,7 +3,12 @@ guid: 34348cd0c9ca4b3499cecb1e5af2699c
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - musicSource: {instanceID: 0}
+  - SFXSource: {instanceID: 0}
+  - bgm: {fileID: 8300000, guid: 2237cce52c51c364a8a553f735724ed6, type: 3}
+  - clap: {fileID: 8300000, guid: 4c3cc7eb133d86940bfcf8d80452d39d, type: 3}
+  - countdown: {fileID: 8300000, guid: a8c46d98a7516c1418496ce46170096f, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

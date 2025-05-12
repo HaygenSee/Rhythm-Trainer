@@ -4,42 +4,44 @@ using UnityEngine;
 
 public class ButtonController : MonoBehaviour
 {
+    AudioManager audioManager;
     private SpriteRenderer SR;
     public Sprite normalImage;
     public Sprite pressedImage;
-    public AudioSource _clap;
-    public AudioSource musicAudioSource;
     public bool muteClap;
     public KeyCode keyToPressA;
     public KeyCode keyToPressB;
     public float offset;
     private float samplesPerBeat;
-    public BeatManager beatManager;
+
+    void Awake() {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
     void Start()
     {
         SR = GetComponent<SpriteRenderer>();
-        if (muteClap) {
-            _clap.mute = true;
-        }
-        float sampleRate = musicAudioSource.clip.frequency;
-        samplesPerBeat = sampleRate * (60f / beatManager.bpm); 
-
+        samplesPerBeat = audioManager.FindSamplesPerBeat(audioManager.musicSource);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(keyToPressA) || Input.GetKeyDown(keyToPressB)) {
-            _clap.Play();
+        if (Input.GetKeyDown(keyToPressA) || Input.GetKeyDown(keyToPressB)) {  
+            if (!muteClap) { audioManager.playFX(audioManager.clap); }
             SR.sprite = pressedImage;
-            // float timeInSeconds = musicAudioSource.timeSamples / (float)musicAudioSource.clip.frequency;
-            // Debug.Log("Clap at song time sample: " + (timeInSeconds + offset));
-            float beatInSong = musicAudioSource.timeSamples / samplesPerBeat;
-            Debug.Log("Clap at song's beat number: " + beatInSong);
-            // function to check timing i guess
         }
 
         if (Input.GetKeyUp(keyToPressA) || Input.GetKeyUp(keyToPressB)) {
             SR.sprite = normalImage;
         }
+    }
+
+    public float findClapTiming(AudioSource source) {
+        float beatInSong = source.timeSamples / samplesPerBeat;
+
+        int barNumber = Mathf.FloorToInt(beatInSong / 4f) + 1; // Bar index (1-based)
+        float beatInBar = (beatInSong % 4f) + 1f; // Beat within bar (1.0 to 4.999...)
+
+        Debug.Log($"Clap at Bar {barNumber}, Timing in Bar: {beatInBar}");
+        return beatInBar;
     }
 }
