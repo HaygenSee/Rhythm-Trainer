@@ -1,0 +1,33 @@
+{
+  "bpm": 120,
+  "bars": [
+    {
+      "id": "bar1",
+      "pattern": "X X X X"
+    },
+    {
+      "id": "bar2",
+      "pattern": "X X X X"
+    },
+    {
+      "id": "bar3",
+      "pattern": "2X X X"
+    },
+    {
+      "id": "bar4",
+      "pattern": "X X X X"
+    },
+    {
+      "id": "bar5",
+      "pattern": "X X X X"
+    },
+    {
+      "id": "bar6",
+      "pattern": "X X X X"
+    },
+    {
+      "id": "bar7",
+      "pattern": "X/2 X/4 X/4 X/2 X/2 X/2 X/2 X/2 R/2"
+    }
+  ]
+}

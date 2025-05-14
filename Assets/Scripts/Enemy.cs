@@ -4,21 +4,55 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
+    private Sprite normalImage;
+    [SerializeField]
+    private Sprite clapImage;
+    AudioManager audioManager;
     ChartReader chartReader;
+    private SpriteRenderer SR;
     public bool enemyTurn;
-    private float timingWindow = 0.1f; // Acceptable error range in beats
     public int Health;
+    private HashSet<float> clappedBeats = new HashSet<float>();
     void Awake() {
         chartReader = GameObject.FindGameObjectWithTag("ChartReader").GetComponent<ChartReader>();
-        enemyTurn = true;
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+
     }
 
+    void Start() {
+        enemyTurn = true;
+        SR = GetComponent<SpriteRenderer>();
+    }
 
     // bar pattern the enemy will clap to
-    public void clapToPattern(Bar currentBar, float currentBeat) {
-        string pattern = currentBar.pattern;
+    public bool clapToPattern(Bar currentBar, float currentBeat) {
         List<float> tempBar = currentBar.getPatternTimings();
 
-        Debug.Log($"Current beat: {currentBeat}, current pattern: {pattern}, translated pattern:  {string.Join(", ", tempBar)}");
+        float timingWindow = 0.05f; // acceptable margin
+
+        foreach (float beat in tempBar) {
+            if (Mathf.Abs(currentBeat - beat) <= timingWindow && !clappedBeats.Contains(beat)) {
+                audioManager.playFX(audioManager.EnemyClap);
+                clappedBeats.Add(beat);
+                return true;
+            }
+        }
+        return false;   
+    }   
+
+    // reset clapped beats on each bar
+    public void enemyNextBar() {
+        clappedBeats.Clear();
+    }
+
+    public void Clap() {
+        StopAllCoroutines();
+        StartCoroutine(ClapRoutine());
+    }
+    private IEnumerator ClapRoutine() {
+        SR.sprite = clapImage;
+        yield return new WaitForSeconds(0.15f);
+        SR.sprite = normalImage;
     }
 }

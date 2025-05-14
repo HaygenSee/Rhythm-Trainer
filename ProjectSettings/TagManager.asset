@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Activator
   - Audio
-  - ButtonController
   - ChartReader
   layers:
   - Default

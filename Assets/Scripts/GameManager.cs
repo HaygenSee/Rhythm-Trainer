@@ -7,44 +7,48 @@ public class GameManager : MonoBehaviour
 {
     AudioManager audioManager;
     ChartReader chartReader;
-    ButtonController buttonController;
+    Player _Player;
     public bool _playingSong = false;
-    private float countdownSamplesPerBeat;
     private float songSamplesPerBeat;
     private List<Bar> fullChart;
     private int currentBarIndex = 0;
     private int chartBarIndex = 0;
-    private float timeSignature = 4f; // 4/4
+    private float timeSignature = 4f; 
+    private int totalNotes = 0;
     public Enemy enemyObject;
     public Text _readyText;
 
     void Awake() {
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
-        buttonController = GameObject.FindGameObjectWithTag("ButtonController").GetComponent<ButtonController>();
+        _Player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         chartReader = GameObject.FindGameObjectWithTag("ChartReader").GetComponent<ChartReader>();
     }
 
     void Start()
     {
-        Invoke("startCountdown", 2.0f);
+        fullChart = chartReader.randomiseBarOrder(false);
+        audioManager.songBpm = chartReader.bpm;
+        StartCoroutine(CountdownThenStartSong());
         Invoke("byeReady", 2.0f);
 
-        countdownSamplesPerBeat = audioManager.FindSamplesPerBeat(audioManager.countdownSource);
+        audioManager.samplesPerBeat = audioManager.FindSamplesPerBeat(audioManager.musicSource);
+
         songSamplesPerBeat = audioManager.FindSamplesPerBeat(audioManager.musicSource);
 
-        fullChart = chartReader.randomiseBarOrder(false);
+        StartCoroutine(CountdownThenStartSong());
 
         Debug.Log($"Bars in chart: {chartReader.barCount}");
+        
+        foreach (Bar bar in fullChart) {
+            totalNotes += bar.getNoteCount();
+        }
+
+        Debug.Log($"Total number of notes: {totalNotes}");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!_playingSong && audioManager.countdownFinished()) {
-            _playingSong = true;
-            audioManager.playSong();
-        }
-
         if (_playingSong && Input.GetKeyDown(KeyCode.Escape)) { // instead of esc key lose condition
             _playingSong = false;
             audioManager.stopSong();
@@ -53,14 +57,9 @@ public class GameManager : MonoBehaviour
         if (_playingSong) {
             float beatInLoop = audioManager.loopBeat();
             
-            Debug.Log("Beating: " + beatInLoop);
             int newBarIndex = Mathf.FloorToInt(audioManager.currentBeatInSong / timeSignature);
 
-            if (Input.GetKeyDown(buttonController.keyToPressA) || Input.GetKeyDown(buttonController.keyToPressB)) {  
-                buttonController.findClapTiming(audioManager.musicSource);
-            }
-
-            if (beatInLoop >= 1f && beatInLoop <= 4.99f) {
+            if (beatInLoop >= 1f && beatInLoop <= 4.90f) {
                 enemyObject.enemyTurn = true;
             } else {
                 enemyObject.enemyTurn = false;
@@ -70,20 +69,42 @@ public class GameManager : MonoBehaviour
                 currentBarIndex = newBarIndex;
                 if (enemyObject.enemyTurn == true) {
                     chartBarIndex += 1;
+                    enemyObject.enemyNextBar();
+                    _Player.playerNextBar();
                 }
             }
 
-            if (enemyObject.enemyTurn && chartBarIndex <= chartReader.barCount - 1) {   
-                enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop);
-                Debug.Log("get clapping teto");
-            }
+            // within bars
+            if (chartBarIndex <= chartReader.barCount - 1) {
+                if (enemyObject.enemyTurn) { 
+                    if (enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop)) {
+                        enemyObject.Clap();
+                    }
+
+                } else { 
+                    _Player.noTapMissCheck(beatInLoop, fullChart[chartBarIndex]); 
+                }
+
+                if (Input.GetKeyDown(_Player.keyToPressA) || Input.GetKeyDown(_Player.keyToPressB)) {
+                    if (enemyObject.enemyTurn) {
+                        Debug.Log("Not your turn yet! - lose health" );
+                    } else {
+                        _Player.accuracyScoring(beatInLoop, fullChart[chartBarIndex]);
+                    }
+                }
+            } else { Debug.Log("Game End"); }
         }
 
     }
 
-    void startCountdown() {
-        audioManager.countdownSource.Play(); 
-    }
+    private IEnumerator CountdownThenStartSong() {
+        yield return new WaitForSeconds(2f); // delay before countdown (optional)
+
+        yield return StartCoroutine(audioManager.PlayDynamicCountdown()); // play 4-beat countdown
+
+        _playingSong = true;
+        audioManager.playSong();
+    }      
 
     void byeReady() {
         _readyText.enabled = false;

@@ -8,6 +8,17 @@ public class Bar
     public string id;
     public string pattern;
 
+    public int getNoteCount() {
+        int noteLength = 0;
+        string[] notes = pattern.Split(" ");
+        foreach (string note in notes){ 
+            if (note.Contains("X")) {
+                noteLength += 1;
+            }
+        }
+        return noteLength;
+    }
+
     public List<float> getPatternTimings() {
         List<float> timings = new List<float>();
         float currentBeat = 1.0f;
@@ -52,6 +63,3 @@ public class Bar
     }
 }
 
-public class BarList {
-    public List<Bar> bars;
-}

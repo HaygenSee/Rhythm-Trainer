@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Audio Clips")]
     public AudioClip bgm;
-    public float songBpm = 120f;
+    public float songBpm;
     public AudioClip clap;
     public AudioClip countdown;
     public AudioClip EnemyClap;
@@ -20,15 +20,10 @@ public class AudioManager : MonoBehaviour
     [Header("Pulse Trigger")]
     [SerializeField] private UnityEvent _trigger;
 
-    private float samplesPerBeat;
-    private float countdownSamplesPerBeat;
+    public float samplesPerBeat;
     private int lastBeat = -1;
     public float currentBeatInSong;
 
-    void Start() {
-        samplesPerBeat = FindSamplesPerBeat(musicSource);
-        countdownSamplesPerBeat = FindSamplesPerBeat(countdownSource);
-    }
     void Update() {
         // pulsate
         trackBeat(musicSource, samplesPerBeat);
@@ -55,8 +50,7 @@ public class AudioManager : MonoBehaviour
 
     // track beat of audio for gameobjects to pulse
     private int trackBeat(AudioSource _audioSource, float _samplesPerBeat) {
-        int currentBeat = Mathf.FloorToInt(_audioSource.timeSamples / _samplesPerBeat);
-        // Debug.Log("Current Beat = " + ((_audioSource.timeSamples / _samplesPerBeat) + 1)); 
+        int currentBeat = Mathf.FloorToInt(_audioSource.timeSamples / _samplesPerBeat) + 1;
         if (currentBeat != lastBeat) {
             lastBeat = currentBeat;
             _trigger.Invoke();
@@ -64,9 +58,12 @@ public class AudioManager : MonoBehaviour
         return currentBeat;
     }
 
-    public bool countdownFinished() {
-        int currentBeat = trackBeat(countdownSource, countdownSamplesPerBeat);
-        return currentBeat >= 4;
+    public IEnumerator PlayDynamicCountdown(int beatCount = 4) {
+        float interval = 60f / songBpm;
+        for (int i = 0; i < beatCount; i++) {
+            countdownSource.PlayOneShot(countdown);
+            yield return new WaitForSeconds(interval);
+        }
     }
 
     public float loopBeat() {
