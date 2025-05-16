@@ -14,7 +14,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip bgm;
     public float songBpm;
     public AudioClip clap;
-    public AudioClip countdown;
+    public AudioClip CD_3to1;
+    public AudioClip CD_Go;
     public AudioClip EnemyClap;
 
     [Header("Pulse Trigger")]
@@ -23,6 +24,7 @@ public class AudioManager : MonoBehaviour
     public float samplesPerBeat;
     private int lastBeat = -1;
     public float currentBeatInSong;
+    public GameObject gameManagerObject;
 
     void Update() {
         // pulsate
@@ -61,7 +63,8 @@ public class AudioManager : MonoBehaviour
     public IEnumerator PlayDynamicCountdown(int beatCount = 4) {
         float interval = 60f / songBpm;
         for (int i = 0; i < beatCount; i++) {
-            countdownSource.PlayOneShot(countdown);
+            if (i != 3) { countdownSource.PlayOneShot(CD_3to1); }
+            else { countdownSource.PlayOneShot(CD_Go); }
             yield return new WaitForSeconds(interval);
         }
     }
@@ -69,6 +72,22 @@ public class AudioManager : MonoBehaviour
     public float loopBeat() {
         float beatInLoop = (currentBeatInSong % 8f) + 1;
         return beatInLoop;
+    }
+
+    public IEnumerator FadeOut(AudioSource audioSource, float fadeTime) {
+        GameManager managerScript = gameManagerObject.GetComponent<GameManager>();
+
+        float startVolume = audioSource.volume;
+
+        while (startVolume > 0.001f) {
+            audioSource.volume -= startVolume * Time.deltaTime / fadeTime;
+            yield return null;
+        }
+
+        audioSource.Stop();
+        Debug.Log("music stopped!");
+        managerScript._playingSong = false;
+        audioSource.volume = startVolume;
     }
 
 }

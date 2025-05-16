@@ -1,33 +1,45 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     AudioManager audioManager;
     ChartReader chartReader;
+    SpriteManager spriteManager;
     Player _Player;
     public bool _playingSong = false;
+    public bool countdownDone = false;
+    private bool firstBarSpawned = false;
+    private List<GameObject> notesSpawned;
     private float songSamplesPerBeat;
     private List<Bar> fullChart;
-    private int currentBarIndex = 0;
-    private int chartBarIndex = 0;
-    private float timeSignature = 4f; 
-    private int totalNotes = 0;
+    private int currentBarIndex = 0; private int chartBarIndex = 0; private float timeSignature = 4f; 
+    private int totalNotes = 0; private int maxScore = 0;
     public Enemy enemyObject;
-    public Text _readyText;
+    public TMP_Text _readyText;
+    public GameObject resultsPage;
+    [Header("Results Text")]
+    public TMP_Text perfectsText; public TMP_Text greatsText; public TMP_Text mehsText; public TMP_Text missesText;
+    public TMP_Text totalScoreText; public TMP_Text percentageText;
 
-    void Awake() {
+    void Awake()
+    {
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         _Player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         chartReader = GameObject.FindGameObjectWithTag("ChartReader").GetComponent<ChartReader>();
+        spriteManager = GameObject.FindGameObjectWithTag("SpriteManager").GetComponent<SpriteManager>();
+        
     }
 
     void Start()
     {
         fullChart = chartReader.randomiseBarOrder(false);
         audioManager.songBpm = chartReader.bpm;
+        enemyObject.enemyTurn = false;
         StartCoroutine(CountdownThenStartSong());
         Invoke("byeReady", 2.0f);
 
@@ -38,12 +50,13 @@ public class GameManager : MonoBehaviour
         StartCoroutine(CountdownThenStartSong());
 
         Debug.Log($"Bars in chart: {chartReader.barCount}");
-        
-        foreach (Bar bar in fullChart) {
+
+        foreach (Bar bar in fullChart)
+        {
             totalNotes += bar.getNoteCount();
         }
-
-        Debug.Log($"Total number of notes: {totalNotes}");
+        maxScore = totalNotes * 300;
+        
     }
 
     // Update is called once per frame
@@ -55,34 +68,55 @@ public class GameManager : MonoBehaviour
         }
 
         if (_playingSong) {
+
+            if (!firstBarSpawned)
+            {
+                notesSpawned = spriteManager.DrawBar(fullChart[0]);
+                firstBarSpawned = true;
+            }
+
             float beatInLoop = audioManager.loopBeat();
             
             int newBarIndex = Mathf.FloorToInt(audioManager.currentBeatInSong / timeSignature);
 
-            if (beatInLoop >= 1f && beatInLoop <= 4.90f) {
+            // taking turns between player and enemy
+            if (beatInLoop >= 1f && beatInLoop <= 4.90f)
+            {
                 enemyObject.enemyTurn = true;
-            } else {
+            }
+            else
+            {
                 enemyObject.enemyTurn = false;
             }
 
-            if (newBarIndex != currentBarIndex) {
+            // next bar
+            if (newBarIndex != currentBarIndex)
+            {
                 currentBarIndex = newBarIndex;
-                if (enemyObject.enemyTurn == true) {
+
+                if (enemyObject.enemyTurn) {   
+                    foreach (GameObject note in notesSpawned) {
+                        Destroy(note);
+                    }
                     chartBarIndex += 1;
                     enemyObject.enemyNextBar();
                     _Player.playerNextBar();
+                    if (chartBarIndex < chartReader.barCount) { notesSpawned = spriteManager.DrawBar(fullChart[chartBarIndex]); }
                 }
             }
 
-            // within bars
+            // still playing song
             if (chartBarIndex <= chartReader.barCount - 1) {
-                if (enemyObject.enemyTurn) { 
-                    if (enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop)) {
+                if (enemyObject.enemyTurn)
+                {
+                    if (enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop))
+                    {
                         enemyObject.Clap();
                     }
-
-                } else { 
-                    _Player.noTapMissCheck(beatInLoop, fullChart[chartBarIndex]); 
+                }
+                else
+                {
+                    _Player.noTapMissCheck(beatInLoop, fullChart[chartBarIndex]);
                 }
 
                 if (Input.GetKeyDown(_Player.keyToPressA) || Input.GetKeyDown(_Player.keyToPressB)) {
@@ -92,8 +126,19 @@ public class GameManager : MonoBehaviour
                         _Player.accuracyScoring(beatInLoop, fullChart[chartBarIndex]);
                     }
                 }
-            } else { Debug.Log("Game End"); }
+            } else {
+                // fade audio when out of bars
+                IEnumerator fadeSound = audioManager.FadeOut(audioManager.musicSource, 0.3f);
+                StartCoroutine(fadeSound);
+                StopCoroutine(fadeSound);
+            }
         }
+        if (countdownDone && !_playingSong && !resultsPage.activeInHierarchy) {
+            // calculate and show results screen
+            calculateResults(_Player.perfectHits, _Player.greatHits, _Player.mehHits, _Player.misses, maxScore);
+            resultsPage.SetActive(true);
+        }
+
 
     }
 
@@ -102,12 +147,31 @@ public class GameManager : MonoBehaviour
 
         yield return StartCoroutine(audioManager.PlayDynamicCountdown()); // play 4-beat countdown
 
+        countdownDone = true;
         _playingSong = true;
         audioManager.playSong();
     }      
 
     void byeReady() {
         _readyText.enabled = false;
+    }
+
+    private void calculateResults(int perfects, int greats, int mehs, int misses, int totalMaxScore) {
+        int finalScore = perfects * 300 + 
+                            greats * 100 + 
+                            mehs * 50;
+
+        float percentage = ((float)finalScore / totalMaxScore) * 100;
+        float rounded = (float)Math.Round((double)percentage, 2);
+        string formatted = rounded.ToString("F2");
+
+        perfectsText.text = perfects.ToString();
+        greatsText.text = greats.ToString();
+        mehsText.text = mehs.ToString();
+        missesText.text = misses.ToString();
+        totalScoreText.text = finalScore.ToString();
+        percentageText.text = formatted + "%";
+            
     }
 
 }

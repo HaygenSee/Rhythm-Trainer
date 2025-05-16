@@ -4,9 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Activator
   - Audio
   - ChartReader
+  - SpriteManager
+  - Enemy
   layers:
   - Default
   - TransparentFX

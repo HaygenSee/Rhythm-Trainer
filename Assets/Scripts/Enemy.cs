@@ -21,13 +21,12 @@ public class Enemy : MonoBehaviour
     }
 
     void Start() {
-        enemyTurn = true;
         SR = GetComponent<SpriteRenderer>();
     }
 
     // bar pattern the enemy will clap to
     public bool clapToPattern(Bar currentBar, float currentBeat) {
-        List<float> tempBar = currentBar.getPatternTimings();
+        List<float> tempBar = currentBar.getPatternTimings(false);
 
         float timingWindow = 0.05f; // acceptable margin
 

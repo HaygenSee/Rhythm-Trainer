@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: aacfd8198607e9c429cad3b094e9115f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - perfectHit: {fileID: 5617779805678553681, guid: f861cd43a9e39244a920c7ed4fcf0caf, type: 3}
+  - greatHit: {fileID: 5234487852695814010, guid: df64314bb6177f246b2272b6afa75918, type: 3}
+  - mehHit: {fileID: 3881963879615484446, guid: e48c7b0f263f57248aa218d7dd7c6938, type: 3}
+  - missHit: {fileID: 846610942534771036, guid: 8028d75e16547e7469c1686cf3d66af3, type: 3}
+  - crotchetGO: {fileID: 1208790381046366625, guid: 3b226922a299ee24cb62b61e2355e2a9, type: 3}
+  - quaverGO: {fileID: 1591070046473753471, guid: 4a87c8ad8f512654384958e23ff8a22a, type: 3}
+  - semiquaverGO: {fileID: 8900220959878927500, guid: deb19ee5592f4fa48b672f1f62dad79f, type: 3}
+  - doubleQuaverGO: {instanceID: 0}
+  - doubleSemiquaverGO: {instanceID: 0}
+  - crotchetRestGO: {fileID: 555202995794206543, guid: 8971ea63b801e2c478f48b71491ac7f0, type: 3}
+  - quaverRestGO: {fileID: 2492346970481139932, guid: 9ed4e0b478b02f54089bcd31242d2774, type: 3}
+  - semiquaverRestGO: {fileID: 4185912422162266298, guid: 9b80087a70efb7c40af4205af2538a79, type: 3}
+  - dotGO: {fileID: 2411500214777934065, guid: a24e1d98929b1d841b09871ebb32e55e, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
