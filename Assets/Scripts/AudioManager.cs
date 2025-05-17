@@ -40,7 +40,18 @@ public class AudioManager : MonoBehaviour
         musicSource.Stop();
     }
 
-    public void playFX(AudioClip clip) {
+    public void pauseSong()
+    {
+        musicSource.Pause();
+    }
+
+    public void ResumeSong()
+    {
+        musicSource.UnPause();
+    }
+
+    public void playFX(AudioClip clip)
+    {
         SFXSource.PlayOneShot(clip);
     }
 
@@ -85,7 +96,6 @@ public class AudioManager : MonoBehaviour
         }
 
         audioSource.Stop();
-        Debug.Log("music stopped!");
         managerScript._playingSong = false;
         audioSource.volume = startVolume;
     }

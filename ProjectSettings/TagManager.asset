@@ -8,6 +8,8 @@ TagManager:
   - ChartReader
   - SpriteManager
   - Enemy
+  - ScoreManager
+  - UIManager
   layers:
   - Default
   - TransparentFX

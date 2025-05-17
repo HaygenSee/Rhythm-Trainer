@@ -10,24 +10,27 @@ public class Bar
 
     public int getNoteCount()
     {
-        int noteLength = 0;
+        int noteCount = 0;
         string[] notes = pattern.Split(" ");
         foreach (string note in notes)
         {
             if (note.Contains("X"))
             {
-                noteLength += 1;
+                noteCount += 1;
             }
-
-            if (note.Contains("D"))
+            else if (note.Contains("D"))
             {
-                noteLength += 2;
+                noteCount += 2;
+            }
+            else if (note.Contains("Q"))
+            {
+                noteCount += 4;
             }
         }
-        return noteLength;
+        return noteCount;
     }
 
-    public List<float> getPatternTimings(bool includeRests)
+    public List<float> getPatternTimings(bool includeRests, bool includeDuplicates)
     {
         List<float> timings = new List<float>();
         float currentBeat = 1.0f;
@@ -37,16 +40,71 @@ public class Bar
         foreach (string note in notes)
         {
             float duration = calculateDuration(note);
+            bool isRest = note.Contains("R");
             bool isNote = note.Contains("X");
+            // for double/ quaduple 8th or 16th notes
+            bool isDoubleNote = note.Contains("D");
+            bool isQuadNote = note.Contains("Q");
 
-            if (isNote || includeRests)
+            if (isNote)
             {
                 timings.Add(currentBeat);
+                currentBeat += duration;
             }
 
-            currentBeat += duration;
-        }
+            else if (isRest)
+            {
+                if (includeRests)
+                {
+                    timings.Add(currentBeat);
+                    currentBeat += duration;
+                }
+                else
+                {
+                    currentBeat += duration;
+                }
 
+            }
+
+            if (isDoubleNote)
+            {
+                timings.Add(currentBeat);
+                if (includeDuplicates)
+                {
+                    currentBeat += duration;
+                    timings.Add(currentBeat);
+                    currentBeat += duration;
+                }
+                else
+                {
+                    float doubleDuration = duration * 2;
+                    currentBeat += doubleDuration;
+                }
+            }
+            if (isQuadNote)
+            {
+                timings.Add(currentBeat);
+                if (includeDuplicates)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        currentBeat += duration;
+                        timings.Add(currentBeat);
+                    }
+                    currentBeat += duration;
+                }
+                else
+                {
+                    float quadDuration = duration * 4;
+                    currentBeat += quadDuration;
+                }
+            }
+        }
+        if (checkBeatOverflow(currentBeat) && !includeDuplicates)
+        {
+            Debug.LogError($"Note overflow! (Last beat duration ends at {currentBeat})");
+            return null;
+        }
         return timings;
     }
 
@@ -79,5 +137,14 @@ public class Bar
 
         return baseDuration;
     }
+    
+    private bool checkBeatOverflow(float finalDuration) {
+        if (finalDuration > 5) {
+            return true;
+        }
+        return false;
+    }   
 }
+
+
 
