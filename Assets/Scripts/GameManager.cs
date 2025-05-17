@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     AudioManager audioManager;
     ChartReader chartReader;
     SpriteManager spriteManager;
+    ScoreManager scoreManager;
+    UIManager _UIManager;
     Player _Player;
     public bool _playingSong = false;
     public bool countdownDone = false;
@@ -22,9 +24,6 @@ public class GameManager : MonoBehaviour
     public Enemy enemyObject;
     public TMP_Text _readyText;
     public GameObject resultsPage;
-    [Header("Results Text")]
-    public TMP_Text perfectsText; public TMP_Text greatsText; public TMP_Text mehsText; public TMP_Text missesText;
-    public TMP_Text totalScoreText; public TMP_Text percentageText;
 
     void Awake()
     {
@@ -32,6 +31,8 @@ public class GameManager : MonoBehaviour
         _Player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         chartReader = GameObject.FindGameObjectWithTag("ChartReader").GetComponent<ChartReader>();
         spriteManager = GameObject.FindGameObjectWithTag("SpriteManager").GetComponent<SpriteManager>();
+        scoreManager = GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ScoreManager>();
+        _UIManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<UIManager>();
         
     }
 
@@ -67,7 +68,8 @@ public class GameManager : MonoBehaviour
             audioManager.stopSong();
         }
 
-        if (_playingSong) {
+        if (_playingSong && !_UIManager.gamePaused) {
+            _UIManager.pauseButton.SetActive(true);
 
             if (!firstBarSpawned)
             {
@@ -133,9 +135,10 @@ public class GameManager : MonoBehaviour
                 StopCoroutine(fadeSound);
             }
         }
-        if (countdownDone && !_playingSong && !resultsPage.activeInHierarchy) {
+        if (countdownDone && !_playingSong && !resultsPage.activeInHierarchy && !(chartBarIndex <= chartReader.barCount - 1)) {
             // calculate and show results screen
-            calculateResults(_Player.perfectHits, _Player.greatHits, _Player.mehHits, _Player.misses, maxScore);
+            _UIManager.pauseButton.SetActive(false);
+            scoreManager.calculateResults(_Player.perfectHits, _Player.greatHits, _Player.mehHits, _Player.misses, maxScore, _Player.earlyNotes, _Player.lateNotes);
             resultsPage.SetActive(true);
         }
 
@@ -155,23 +158,4 @@ public class GameManager : MonoBehaviour
     void byeReady() {
         _readyText.enabled = false;
     }
-
-    private void calculateResults(int perfects, int greats, int mehs, int misses, int totalMaxScore) {
-        int finalScore = perfects * 300 + 
-                            greats * 100 + 
-                            mehs * 50;
-
-        float percentage = ((float)finalScore / totalMaxScore) * 100;
-        float rounded = (float)Math.Round((double)percentage, 2);
-        string formatted = rounded.ToString("F2");
-
-        perfectsText.text = perfects.ToString();
-        greatsText.text = greats.ToString();
-        mehsText.text = mehs.ToString();
-        missesText.text = misses.ToString();
-        totalScoreText.text = finalScore.ToString();
-        percentageText.text = formatted + "%";
-            
-    }
-
 }

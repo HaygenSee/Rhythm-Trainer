@@ -8,10 +8,12 @@ public class SpriteManager : MonoBehaviour
     [SerializeField] float _returnSpeed = 0.15f;
     [Header("Hit Game Objects")]
     public GameObject perfectHit; public GameObject greatHit; public GameObject mehHit; public GameObject missHit;
+    public GameObject tellLate; public GameObject tellEarly;
 
     [Header("Note Symbols Game Objects")]
     public GameObject crotchetGO; public GameObject quaverGO; public GameObject semiquaverGO;
     public GameObject doubleQuaverGO; public GameObject doubleSemiquaverGO;
+    public GameObject quadQuaverGO; public GameObject quadSemiquaverGO; 
     public GameObject crotchetRestGO; public GameObject quaverRestGO;
     public GameObject semiquaverRestGO; public GameObject dotGO;
 
@@ -41,21 +43,18 @@ public class SpriteManager : MonoBehaviour
     public List<GameObject> DrawBar(Bar currentBar)
     {
         List<GameObject> spawnedSymbols = new List<GameObject>();
-        List<float> timings = currentBar.getPatternTimings(true);
+        List<float> timings = currentBar.getPatternTimings(true, false);
         string[] notations = currentBar.pattern.Split(" ");
-        float spaceDivision = 4f / timings.Count;
-        float currentPosition = -2f;
+        int count = notations.Length;
+        // float spacing = 4f / count;
+        // float startX = -2f + spacing / 2f; 
 
-        for (int i = 0; i < notations.Length; i++)
+        for (int i = 0; i < count; i++)
         {
-            int count = notations.Length;
             string note = notations[i];
-
-            string noteName = returnSymbolName(note);
-            GameObject symbolToSpawn = getNotePrefab(noteName);
-
-                float t = (count == 1) ? 0.5f : (float)i / (count - 1); 
-            float xPos = Mathf.Lerp(-2f, 2f, t);
+            GameObject symbolToSpawn = getNotePrefab(note);
+            float xPos = timings[i] - 3f;
+            // float xPos = startX + i * spacing;
             Vector3 spawnPos = new Vector3(xPos, 2.85f, 0f);
 
             GameObject instance = Instantiate(symbolToSpawn, spawnPos, Quaternion.identity);
@@ -65,41 +64,27 @@ public class SpriteManager : MonoBehaviour
                 spawnedSymbols.Add(instanceDot);
             }
             spawnedSymbols.Add(instance);
-            currentPosition += spaceDivision;
         }
         return spawnedSymbols;
     }
 
-    // get gameobject from name;
-    private GameObject getNotePrefab(string noteName)
-    {
-        switch (noteName)
-        {
-            case "crotchet": return crotchetGO;
-            case "quaver": return quaverGO;
-            case "semiquaver": return semiquaverGO;
-
-            case "crotchetrest": return crotchetRestGO;
-            case "quaverrest": return quaverRestGO;
-            case "semiquaverrest": return semiquaverRestGO;
-
-            default: return null;
-        }
-    }
-    
-    // return note name from notation
-    private string returnSymbolName(string notation)
+    // get gameobject from notation;
+    private GameObject getNotePrefab(string notation)
     {
         notation = notation.Replace(".", string.Empty); 
         switch (notation)
         {
-            case "X": return "crotchet";
-            case "X/2": return "quaver";
-            case "X/4": return "semiquaver";
+            case "X": return crotchetGO;
+            case "X/2": return quaverGO;
+            case "X/4": return semiquaverGO;
+            case "D/2": return doubleQuaverGO;
+            case "D/4": return doubleSemiquaverGO;
+            case "Q/2": return quadQuaverGO;
+            case "Q/4": return quadSemiquaverGO;
 
-            case "R": return "crotchetrest";
-            case "R/2": return "quaverrest";
-            case "R/4": return "semiquaverrest";
+            case "R": return crotchetRestGO;
+            case "R/2": return quaverRestGO;
+            case "R/4": return semiquaverRestGO;
 
             default: return null;
         }

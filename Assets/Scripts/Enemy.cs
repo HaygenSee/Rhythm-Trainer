@@ -26,7 +26,7 @@ public class Enemy : MonoBehaviour
 
     // bar pattern the enemy will clap to
     public bool clapToPattern(Bar currentBar, float currentBeat) {
-        List<float> tempBar = currentBar.getPatternTimings(false);
+        List<float> tempBar = currentBar.getPatternTimings(false, true);
 
         float timingWindow = 0.05f; // acceptable margin
 
