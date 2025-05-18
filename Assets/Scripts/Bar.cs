@@ -8,37 +8,31 @@ public class Bar
     public string id;
     public string pattern;
 
-    public int getNoteCount()
-    {
+    public int getNoteCount() {
         int noteCount = 0;
         string[] notes = pattern.Split(" ");
         foreach (string note in notes)
         {
-            if (note.Contains("X"))
-            {
+            if (note.Contains("X")) {
                 noteCount += 1;
             }
-            else if (note.Contains("D"))
-            {
+            else if (note.Contains("D")) {
                 noteCount += 2;
             }
-            else if (note.Contains("Q"))
-            {
+            else if (note.Contains("Q")) {
                 noteCount += 4;
             }
         }
         return noteCount;
     }
 
-    public List<float> getPatternTimings(bool includeRests, bool includeDuplicates)
-    {
+    public List<float> getPatternTimings(bool includeRests, bool includeDuplicates) {
         List<float> timings = new List<float>();
         float currentBeat = 1.0f;
 
         string[] notes = pattern.Split(" ");
 
-        foreach (string note in notes)
-        {
+        foreach (string note in notes) {
             float duration = calculateDuration(note);
             bool isRest = note.Contains("R");
             bool isNote = note.Contains("X");
@@ -46,46 +40,37 @@ public class Bar
             bool isDoubleNote = note.Contains("D");
             bool isQuadNote = note.Contains("Q");
 
-            if (isNote)
-            {
+            if (isNote) {
                 timings.Add(currentBeat);
                 currentBeat += duration;
             }
 
-            else if (isRest)
-            {
-                if (includeRests)
-                {
+            else if (isRest) {
+                if (includeRests) {
                     timings.Add(currentBeat);
                     currentBeat += duration;
                 }
-                else
-                {
+                else {
                     currentBeat += duration;
                 }
 
             }
 
-            if (isDoubleNote)
-            {
+            if (isDoubleNote) {
                 timings.Add(currentBeat);
-                if (includeDuplicates)
-                {
+                if (includeDuplicates) {
                     currentBeat += duration;
                     timings.Add(currentBeat);
                     currentBeat += duration;
                 }
-                else
-                {
+                else {
                     float doubleDuration = duration * 2;
                     currentBeat += doubleDuration;
                 }
             }
-            if (isQuadNote)
-            {
+            if (isQuadNote) {
                 timings.Add(currentBeat);
-                if (includeDuplicates)
-                {
+                if (includeDuplicates) {
                     for (int i = 0; i < 3; i++)
                     {
                         currentBeat += duration;
@@ -93,15 +78,13 @@ public class Bar
                     }
                     currentBeat += duration;
                 }
-                else
-                {
+                else {
                     float quadDuration = duration * 4;
                     currentBeat += quadDuration;
                 }
             }
         }
-        if (checkBeatOverflow(currentBeat) && !includeDuplicates)
-        {
+        if (checkBeatOverflow(currentBeat) && !includeDuplicates) {
             Debug.LogError($"Note overflow! (Last beat duration ends at {currentBeat})");
             return null;
         }
@@ -109,29 +92,23 @@ public class Bar
     }
 
 
-    private float calculateDuration(string note)
-    {
+    private float calculateDuration(string note) {
         float baseDuration = 1.0f;
 
-        if (note.Contains("/"))
-        {
+        if (note.Contains("/")) {
             string[] parts = note.Split("/");
-            if (float.TryParse(parts[1].TrimEnd('.'), out float denom))
-            {
+            if (float.TryParse(parts[1].TrimEnd('.'), out float denom)) {
                 baseDuration = 1.0f / denom;
             }
         }
 
-        if (char.IsDigit(note[0]))
-        {
-            if (int.TryParse(note.Substring(0, 1), out int mult))
-            {
+        if (char.IsDigit(note[0])) {
+            if (int.TryParse(note.Substring(0, 1), out int mult)) {
                 baseDuration *= mult;
             }
         }
 
-        if (note.EndsWith("."))
-        {
+        if (note.EndsWith(".")) {
             baseDuration *= 1.5f;
         }
 
