@@ -4,13 +4,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField]
-    private Sprite normalImage;
-    [SerializeField]
-    private Sprite clapImage;
+    [SerializeField] private Animator _animator;
     AudioManager audioManager;
     ChartReader chartReader;
-    private SpriteRenderer SR;
     public bool enemyTurn;
     public int Health;
     private HashSet<float> clappedBeats = new HashSet<float>();
@@ -18,10 +14,6 @@ public class Enemy : MonoBehaviour
         chartReader = GameObject.FindGameObjectWithTag("ChartReader").GetComponent<ChartReader>();
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 
-    }
-
-    void Start() {
-        SR = GetComponent<SpriteRenderer>();
     }
 
     // bar pattern the enemy will clap to
@@ -50,8 +42,8 @@ public class Enemy : MonoBehaviour
         StartCoroutine(ClapRoutine());
     }
     private IEnumerator ClapRoutine() {
-        SR.sprite = clapImage;
+        _animator.SetBool("activateClap", true);
         yield return new WaitForSeconds(0.15f);
-        SR.sprite = normalImage;
+        _animator.SetBool("activateClap", false);
     }
 }

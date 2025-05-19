@@ -3,6 +3,10 @@
   "bars": [
     {
       "id": "bar1",
+      "pattern": "X X X Q/4"
+    },
+    {
+      "id": "bar1",
       "pattern": "Q/2 D/2 X"
     },
     {
