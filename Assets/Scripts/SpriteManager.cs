@@ -7,7 +7,7 @@ public class SpriteManager : MonoBehaviour
     [SerializeField] float _pulseSize = 1.5f;
     [SerializeField] float _returnSpeed = 0.15f;
     [Header("Hit Game Objects")]
-    public GameObject perfectHit; public GameObject greatHit; public GameObject mehHit; public GameObject missHit;
+    public GameObject perfectHit; public GameObject greatHit; public GameObject missHit;
     public GameObject tellLate; public GameObject tellEarly;
 
     [Header("Note Symbols Game Objects")]
@@ -16,6 +16,11 @@ public class SpriteManager : MonoBehaviour
     public GameObject quadQuaverGO; public GameObject quadSemiquaverGO; 
     public GameObject crotchetRestGO; public GameObject quaverRestGO;
     public GameObject semiquaverRestGO; public GameObject dotGO;
+
+    [Header("Spotlight Objects")]
+    public GameObject tetoLight; public GameObject playerLight;
+    public GameObject hintText;
+    public GameObject musicVolumeBar, SFXVolumeBar;
 
     public void pulseOnAppear(GameObject _timingText)
     {
@@ -68,10 +73,25 @@ public class SpriteManager : MonoBehaviour
         return spawnedSymbols;
     }
 
+    public void togglePlayerLight(bool onOrOff)
+    {
+        playerLight.SetActive(onOrOff);
+    }
+
+    public void toggleTetoLight(bool onOrOff)
+    {
+        tetoLight.SetActive(onOrOff);
+    }
+
+    public void toggleHint(bool onoff)
+    {
+        hintText.SetActive(onoff);
+    }
+
     // get gameobject from notation;
     private GameObject getNotePrefab(string notation)
     {
-        notation = notation.Replace(".", string.Empty); 
+        notation = notation.Replace(".", string.Empty);
         switch (notation)
         {
             case "X": return crotchetGO;

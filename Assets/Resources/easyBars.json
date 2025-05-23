@@ -1,9 +1,9 @@
 {
-  "bpm": 120,
+  "bpm": 90,
   "bars": [
     {
       "id": "bar1",
-      "pattern": "X X X Q/4"
+      "pattern": "X X D/2 X"
     },
     {
       "id": "bar1",
@@ -39,7 +39,7 @@
     },
     {
       "id": "bar9",
-      "pattern": "X X X Q/4"
+      "pattern": "X X X D/2"
     },
     {
       "id": "bar10",

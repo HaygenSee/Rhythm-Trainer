@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public Enemy enemyObject;
     public TMP_Text _readyText;
     public GameObject resultsPage;
+    private Turn currentTurn;
+    private GameState currentGameState;
 
     void Awake()
     {
@@ -38,9 +40,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        fullChart = chartReader.randomiseBarOrder(false);
+        fullChart = chartReader.randomiseBarOrder(true);
         audioManager.songBpm = chartReader.bpm;
-        enemyObject.enemyTurn = false;
         StartCoroutine(CountdownThenStartSong());
         Invoke("byeReady", 2.0f);
 
@@ -57,38 +58,61 @@ public class GameManager : MonoBehaviour
             totalNotes += bar.getNoteCount();
         }
         maxScore = totalNotes * 300;
+
+        Debug.Log($"Total notes: {totalNotes}");
         
+    }
+
+    public enum Turn
+    {
+        Player,
+        Opponent
+    }
+    public enum GameState
+    {
+        Playing,
+        Paused,
+        Results,
+        Countdown,
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_playingSong && Input.GetKeyDown(KeyCode.Escape)) { // instead of esc key lose condition
-            _playingSong = false;
-            audioManager.stopSong();
-        }
-
-        if (_playingSong && !_UIManager.gamePaused) {
+        if (currentGameState == GameState.Playing)
+        {
             _UIManager.pauseButton.SetActive(true);
+
+            float beatInLoop = audioManager.loopBeat();
+            int newBarIndex = Mathf.FloorToInt(audioManager.currentBeatInSong / timeSignature);
 
             if (!firstBarSpawned)
             {
                 notesSpawned = spriteManager.DrawBar(fullChart[0]);
+                spriteManager.toggleTetoLight(true);
                 firstBarSpawned = true;
             }
-
-            float beatInLoop = audioManager.loopBeat();
-            
-            int newBarIndex = Mathf.FloorToInt(audioManager.currentBeatInSong / timeSignature);
 
             // taking turns between player and enemy
             if (beatInLoop >= 1f && beatInLoop <= 4.90f)
             {
-                enemyObject.enemyTurn = true;
+                currentTurn = Turn.Opponent;
             }
             else
             {
-                enemyObject.enemyTurn = false;
+                currentTurn = Turn.Player;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                _UIManager.pauseGame();
+                currentGameState = GameState.Paused;
+            }
+
+            if (_UIManager.pauseScreen.activeSelf)
+            {
+                currentGameState = GameState.Paused;
             }
 
             // next bar
@@ -96,20 +120,35 @@ public class GameManager : MonoBehaviour
             {
                 currentBarIndex = newBarIndex;
 
-                if (enemyObject.enemyTurn) {   
-                    foreach (GameObject note in notesSpawned) {
+                if (currentTurn == Turn.Opponent)
+                {
+                    foreach (GameObject note in notesSpawned)
+                    {
                         Destroy(note);
                     }
                     chartBarIndex += 1;
                     enemyObject.enemyNextBar();
                     _Player.playerNextBar();
-                    if (chartBarIndex < chartReader.barCount) { notesSpawned = spriteManager.DrawBar(fullChart[chartBarIndex]); }
+
+                    if (chartBarIndex < chartReader.barCount)
+                    {
+                        spriteManager.toggleTetoLight(true);
+                        spriteManager.togglePlayerLight(false);
+                        notesSpawned = spriteManager.DrawBar(fullChart[chartBarIndex]);
+                    }
+                    else
+                    {
+                        // jover
+                        spriteManager.toggleTetoLight(false);
+                        spriteManager.togglePlayerLight(false);
+                    }
                 }
             }
 
             // still playing song
-            if (chartBarIndex <= chartReader.barCount - 1) {
-                if (enemyObject.enemyTurn)
+            if (chartBarIndex <= chartReader.barCount - 1)
+            {
+                if (currentTurn == Turn.Opponent)
                 {
                     if (enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop))
                     {
@@ -118,42 +157,83 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
+                    spriteManager.toggleTetoLight(false);
+                    spriteManager.togglePlayerLight(true);
                     _Player.noTapMissCheck(beatInLoop, fullChart[chartBarIndex]);
                 }
 
-                if (Input.GetKeyDown(_Player.keyToPressA) || Input.GetKeyDown(_Player.keyToPressB)) {
-                    if (enemyObject.enemyTurn) {
-                        Debug.Log("Not your turn yet! - lose health" );
-                    } else {
-                        _Player.accuracyScoring(beatInLoop, fullChart[chartBarIndex]);
+                if (Input.GetKeyDown(_Player.keyToPressA) || Input.GetKeyDown(_Player.keyToPressB))
+                {
+                    if (currentTurn == Turn.Opponent)
+                    {
+                        Debug.Log("Not your turn yet! - lose health");
+                    }
+                    else
+                    {
+                        bool hit = _Player.accuracyScoring(beatInLoop, fullChart[chartBarIndex]);
+                        if (hit)
+                        {
+                            enemyObject.takeDamage();
+                        }
                     }
                 }
-            } else {
-                // fade audio when out of bars
-                IEnumerator fadeSound = audioManager.FadeOut(audioManager.musicSource, 0.3f);
+            }
+            else
+            {
+                IEnumerator fadeSound = FadeOut(audioManager.musicSource, 0.3f);
                 StartCoroutine(fadeSound);
                 StopCoroutine(fadeSound);
             }
         }
-        if (countdownDone && !_playingSong && !resultsPage.activeInHierarchy && !(chartBarIndex <= chartReader.barCount - 1)) {
+        else if (currentGameState == GameState.Paused)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                currentGameState = GameState.Playing;
+                _UIManager.resumeGame();
+            }
+
+            if (!_UIManager.pauseScreen.activeSelf)
+            {
+                currentGameState = GameState.Playing;
+            }
+        }
+        else if (currentGameState == GameState.Results)
+        {
             // calculate and show results screen
+            spriteManager.musicVolumeBar.SetActive(false);
+            spriteManager.SFXVolumeBar.SetActive(false);
+            spriteManager.toggleHint(false);
             _UIManager.pauseButton.SetActive(false);
-            scoreManager.calculateResults(_Player.perfectHits, _Player.greatHits, _Player.mehHits, _Player.misses, maxScore, _Player.earlyNotes, _Player.lateNotes);
+            scoreManager.calculateResults(_Player.perfectHits, _Player.greatHits, _Player.misses, maxScore, _Player.earlyNotes, _Player.lateNotes);
             resultsPage.SetActive(true);
         }
-
-
     }
 
     private IEnumerator CountdownThenStartSong() {
+        currentGameState = GameState.Countdown;
         yield return new WaitForSeconds(2f); // delay before countdown (optional)
 
         yield return StartCoroutine(audioManager.PlayDynamicCountdown()); // play 4-beat countdown
 
-        countdownDone = true;
-        _playingSong = true;
         audioManager.playSong();
+        currentGameState = GameState.Playing;
     }      
+
+    private IEnumerator FadeOut(AudioSource audioSource, float fadeTime)
+    {
+        float startVolume = audioSource.volume;
+
+        while (startVolume > 0.001f)
+        {
+            audioSource.volume -= startVolume * Time.deltaTime / fadeTime;
+            yield return null;
+        }
+
+        audioSource.Stop();
+        currentGameState = GameState.Results;
+        audioSource.volume = startVolume;
+    }
 
     void byeReady() {
         _readyText.enabled = false;

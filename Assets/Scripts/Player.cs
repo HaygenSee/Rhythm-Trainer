@@ -15,9 +15,8 @@ public class Player : MonoBehaviour
     public KeyCode keyToPressB;
     public float offset;
     private float perfectWindow = 0.1f;
-    private float greatWindow = 0.25f;
-    private float mehWindow = 0.35f;
-    public int perfectHits, greatHits, mehHits, misses;
+    private float greatWindow = 0.24f;
+    public int perfectHits, greatHits, misses;
     public int earlyNotes = 0;
     public int lateNotes = 0;
     public int missedNotes = 0;
@@ -33,7 +32,6 @@ public class Player : MonoBehaviour
         SR = GetComponent<SpriteRenderer>();
         perfectHits = 0;
         greatHits = 0;
-        mehHits = 0;
         misses = 0;
     }
 
@@ -51,7 +49,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void accuracyScoring(float clapTime, Bar currentBar)
+    public bool accuracyScoring(float clapTime, Bar currentBar)
     {
         List<float> timings = currentBar.getPatternTimings(false, true);
         clapTime = clapTime + offset - 4;
@@ -68,7 +66,7 @@ public class Player : MonoBehaviour
                     lateNotes += 1;
                     perfectHits += 1;
                     spawnEffect(spriteManager.perfectHit);
-                    return;
+                    return true;
                 }
                 else if (diff <= greatWindow)
                 {
@@ -77,16 +75,7 @@ public class Player : MonoBehaviour
                     greatHits += 1;
                     spawnEffect(spriteManager.greatHit);
                     showEarlyLate(spriteManager.tellLate);
-                    return;
-                }
-                else if (diff <= mehWindow)
-                {
-                    clappedBeats.Add(beat);
-                    lateNotes += 1;
-                    mehHits += 1;
-                    spawnEffect(spriteManager.mehHit);
-                    showEarlyLate(spriteManager.tellLate);
-                    return;
+                    return true;
                 }
                 else
                 {
@@ -95,7 +84,7 @@ public class Player : MonoBehaviour
                     misses += 1;
                     spawnEffect(spriteManager.missHit);
                     showEarlyLate(spriteManager.tellLate);
-                    return;
+                    return false;
                 }
 
             }
@@ -108,7 +97,7 @@ public class Player : MonoBehaviour
                     earlyNotes += 1;
                     perfectHits += 1;
                     spawnEffect(spriteManager.perfectHit);
-                    return;
+                    return true;
                 }
                 else if (diff <= greatWindow)
                 {
@@ -117,16 +106,7 @@ public class Player : MonoBehaviour
                     greatHits += 1;
                     spawnEffect(spriteManager.greatHit);
                     showEarlyLate(spriteManager.tellEarly);
-                    return;
-                }
-                else if (diff <= mehWindow)
-                {
-                    clappedBeats.Add(beat);
-                    earlyNotes += 1;
-                    mehHits += 1;
-                    spawnEffect(spriteManager.mehHit);
-                    showEarlyLate(spriteManager.tellEarly);
-                    return;
+                    return true;
                 }
                 else
                 {
@@ -135,10 +115,11 @@ public class Player : MonoBehaviour
                     misses += 1;
                     spawnEffect(spriteManager.missHit);
                     showEarlyLate(spriteManager.tellEarly);
-                    return;
+                    return false;
                 }
             }
         }
+        return false;
     }
 
     public void noTapMissCheck(float currentBeat, Bar currentBar)
@@ -149,11 +130,12 @@ public class Player : MonoBehaviour
         {
             if (clappedBeats.Contains(beat)) continue;
 
-            if (currentBeat - beat > 0.4)
+            if (currentBeat - beat > 0.23)
             {
                 clappedBeats.Add(beat);
                 spawnEffect(spriteManager.missHit);
                 missedNotes += 1;
+                misses += 1;
             }
         }
     }
@@ -180,11 +162,11 @@ public class Player : MonoBehaviour
     
         if (timingObject.name == "early")
         {
-            spawnPosition = transform.position + new Vector3(-1f, 0.5f, 0f);
+            spawnPosition = transform.position + new Vector3(-1f, 1f, 0f);
         }
         else
         {
-            spawnPosition = transform.position + new Vector3(1f, 0.5f, 0f);
+            spawnPosition = transform.position + new Vector3(1f, 1f, 0f);
         }
     
         GameObject offsetText = Instantiate(timingObject, spawnPosition, Quaternion.identity);

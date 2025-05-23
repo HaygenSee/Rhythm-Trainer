@@ -6,13 +6,18 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour
 {
     AudioManager audioManager;
+    GameManager gameManager;
     public bool gamePaused;
     public GameObject pauseScreen;
     public GameObject pauseButton;
-
+    public GameObject settingsUI;
+    public AudioSource testSFX;
+    public AudioClip clapTestSound;
     void Awake()
     {
         GameObject audioObject = GameObject.FindGameObjectWithTag("Audio");
+        GameObject gameManager = GameObject.FindGameObjectWithTag("GameManager");
+
         if (audioObject != null)
         {
             audioManager = audioObject.GetComponent<AudioManager>();
@@ -29,6 +34,11 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene("easy");
     }
 
+    public void loadDefinitelyEasyLevel()
+    {
+        SceneManager.LoadScene("Consistency Test");
+    }
+
     public void backToMenu()
     {
         SceneManager.LoadScene("menu");
@@ -38,7 +48,6 @@ public class UIManager : MonoBehaviour
     {
         pauseScreen.SetActive(false);
         pauseButton.SetActive(true);
-        gamePaused = false;
         audioManager.ResumeSong();
     }
 
@@ -49,4 +58,24 @@ public class UIManager : MonoBehaviour
         pauseScreen.SetActive(true);
         pauseButton.SetActive(false);
     }
+    public void openSettings()
+    {
+        settingsUI.SetActive(true);
+    }
+    public void closeSettings()
+    {
+        settingsUI.SetActive(false);
+    }
+
+    public void clapTest()
+    {
+        testSFX.PlayOneShot(clapTestSound);
+    }
+
+    public void quitGame()
+    {
+        Application.Quit();
+    }
+
+    
 }

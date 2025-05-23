@@ -10,11 +10,12 @@ TagManager:
   - Enemy
   - ScoreManager
   - UIManager
+  - GameManager
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Below
   - Water
   - UI
   - 

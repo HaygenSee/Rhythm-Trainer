@@ -8,7 +8,6 @@ public class AudioManager : MonoBehaviour
     [Header("Audio Source")]
     [SerializeField] public AudioSource musicSource;
     [SerializeField] public AudioSource SFXSource;
-    [SerializeField] public AudioSource countdownSource;
 
     [Header("Audio Clips")]
     public AudioClip bgm;
@@ -74,8 +73,8 @@ public class AudioManager : MonoBehaviour
     public IEnumerator PlayDynamicCountdown(int beatCount = 4) {
         float interval = 60f / songBpm;
         for (int i = 0; i < beatCount; i++) {
-            if (i != 3) { countdownSource.PlayOneShot(CD_3to1); }
-            else { countdownSource.PlayOneShot(CD_Go); }
+            if (i != 3) { musicSource.PlayOneShot(CD_3to1); }
+            else { musicSource.PlayOneShot(CD_Go); }
             yield return new WaitForSeconds(interval);
         }
     }
@@ -83,21 +82,6 @@ public class AudioManager : MonoBehaviour
     public float loopBeat() {
         float beatInLoop = (currentBeatInSong % 8f) + 1;
         return beatInLoop;
-    }
-
-    public IEnumerator FadeOut(AudioSource audioSource, float fadeTime) {
-        GameManager managerScript = gameManagerObject.GetComponent<GameManager>();
-
-        float startVolume = audioSource.volume;
-
-        while (startVolume > 0.001f) {
-            audioSource.volume -= startVolume * Time.deltaTime / fadeTime;
-            yield return null;
-        }
-
-        audioSource.Stop();
-        managerScript._playingSong = false;
-        audioSource.volume = startVolume;
     }
 
 }
