@@ -9,12 +9,14 @@ public class SpriteManager : MonoBehaviour
     [Header("Hit Game Objects")]
     public GameObject perfectHit; public GameObject greatHit; public GameObject missHit;
     public GameObject tellLate; public GameObject tellEarly;
+    public GameObject tellAudioQues;
 
     [Header("Note Symbols Game Objects")]
     public GameObject crotchetGO; public GameObject quaverGO; public GameObject semiquaverGO;
     public GameObject doubleQuaverGO; public GameObject doubleSemiquaverGO;
-    public GameObject quadQuaverGO; public GameObject quadSemiquaverGO; 
+    public GameObject quadQuaverGO; public GameObject quadSemiquaverGO;
     public GameObject crotchetRestGO; public GameObject quaverRestGO;
+    public GameObject tripletGO;
     public GameObject semiquaverRestGO; public GameObject dotGO;
 
     [Header("Spotlight Objects")]
@@ -73,6 +75,29 @@ public class SpriteManager : MonoBehaviour
         return spawnedSymbols;
     }
 
+    // get gameobject from notation;
+    private GameObject getNotePrefab(string notation)
+    {
+        notation = notation.Replace(".", string.Empty);
+        switch (notation)
+        {
+            case "X": return crotchetGO;
+            case "X/2": return quaverGO;
+            case "X/4": return semiquaverGO;
+            case "D/2": return doubleQuaverGO;
+            case "D/4": return doubleSemiquaverGO;
+            case "Q/2": return quadQuaverGO;
+            case "Q/4": return quadSemiquaverGO;
+            case "T": return tripletGO;
+
+            case "R": return crotchetRestGO;
+            case "R/2": return quaverRestGO;
+            case "R/4": return semiquaverRestGO;
+
+            default: return null;
+        }
+    }
+
     public void togglePlayerLight(bool onOrOff)
     {
         playerLight.SetActive(onOrOff);
@@ -88,26 +113,9 @@ public class SpriteManager : MonoBehaviour
         hintText.SetActive(onoff);
     }
 
-    // get gameobject from notation;
-    private GameObject getNotePrefab(string notation)
+    public void AudioQueHintOn()
     {
-        notation = notation.Replace(".", string.Empty);
-        switch (notation)
-        {
-            case "X": return crotchetGO;
-            case "X/2": return quaverGO;
-            case "X/4": return semiquaverGO;
-            case "D/2": return doubleQuaverGO;
-            case "D/4": return doubleSemiquaverGO;
-            case "Q/2": return quadQuaverGO;
-            case "Q/4": return quadSemiquaverGO;
-
-            case "R": return crotchetRestGO;
-            case "R/2": return quaverRestGO;
-            case "R/4": return semiquaverRestGO;
-
-            default: return null;
-        }
+        tellAudioQues.SetActive(true);
     }
     
 }

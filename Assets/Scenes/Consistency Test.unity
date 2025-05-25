@@ -829,7 +829,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 6321765741141548610, guid: 05da6c4ca39cd8949a8a71eca74d65c7, type: 2}
-  m_audioClip: {fileID: 8300000, guid: ee81e560f01e8814fb07d5747bb2f084, type: 3}
+  m_audioClip: {fileID: 8300000, guid: d07c74694902f05409574d443bef23db, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.7
   m_Pitch: 1
@@ -2435,8 +2435,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 214.78693, y: 142.30997}
-  m_SizeDelta: {x: 452.5859, y: 99.359}
+  m_AnchoredPosition: {x: 140.107, y: 142.30997}
+  m_SizeDelta: {x: 303.226, y: 99.359}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &905199937
 MonoBehaviour:
@@ -4227,7 +4227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b6ef926f648b1b4fbc4153e801c47f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFile: {fileID: 4900000, guid: 39f7995699e01fd4baefa07cc865acd1, type: 3}
+  jsonFile: {fileID: 4900000, guid: 6168cd8b0fb4d2e42923a5c967fc881c, type: 3}
   barCount: 0
 --- !u!4 &1473797779
 Transform:
@@ -4273,6 +4273,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a53fd3f56451f49b243a9b6abe4cd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playingSong: 0
+  countdownDone: 0
   enemyObject: {fileID: 42740292}
   _readyText: {fileID: 2042938382}
   resultsPage: {fileID: 766832845}
@@ -5651,6 +5653,8 @@ MonoBehaviour:
   pauseScreen: {fileID: 1782969516}
   pauseButton: {fileID: 911739199}
   settingsUI: {fileID: 0}
+  testSFX: {fileID: 0}
+  clapTestSound: {fileID: 0}
 --- !u!4 &1948916121
 Transform:
   m_ObjectHideFlags: 0

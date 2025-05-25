@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class ScoreManager : MonoBehaviour
@@ -12,7 +13,24 @@ public class ScoreManager : MonoBehaviour
     public TMP_Text perfectsText; public TMP_Text greatsText; public TMP_Text missesText;
     public TMP_Text totalScoreText; public TMP_Text percentageText;
     public TMP_Text earlyText; public TMP_Text lateText;
-    public void calculateResults(int perfects, int greats, int misses, int totalMaxScore, int earlys, int lates)
+    public GameObject highscoreText;
+    public int highscore;
+
+    private void Start()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        Debug.Log(scene.name);
+        if (scene.name == "Easy")
+        {
+            highscore = PlayerPrefs.GetInt("easyHighscore");
+        }
+        else if (scene.name == "Consistency Test")
+        {
+            highscore = PlayerPrefs.GetInt("definitelyEasyHighscore");
+        }
+    }
+
+    public bool calculateResults(int perfects, int greats, int misses, int totalMaxScore, int earlys, int lates, string levelScoreKey)
     {
         int finalScore = perfects * 300 +
                             greats * 100;
@@ -30,5 +48,12 @@ public class ScoreManager : MonoBehaviour
         percentageText.text = formatted + "%";
         earlyText.text = "Early: " + earlysFormatted;
         lateText.text = "Late: " + latesFormatted;
-    }
+
+        if (finalScore > PlayerPrefs.GetInt(levelScoreKey))
+        {
+            PlayerPrefs.SetInt(levelScoreKey, finalScore);
+            return true;
+        }
+        return false;
+    } 
 }

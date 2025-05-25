@@ -37,16 +37,22 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(keyToPressA) || Input.GetKeyDown(keyToPressB))
+        if ((Input.anyKeyDown || Input.anyKeyDown) && !(Input.GetKeyDown(KeyCode.Escape)))
         {
             if (!muteClap) { audioManager.playFX(audioManager.clap); }
-            SR.sprite = pressedImage;
-        }
+            Clap();
+        } 
+    }
 
-        if (Input.GetKeyUp(keyToPressA) || Input.GetKeyUp(keyToPressB))
-        {
-            SR.sprite = normalImage;
-        }
+    private void Clap()
+    {
+        StartCoroutine(ClapRoutine());
+    }
+    private IEnumerator ClapRoutine()
+    {
+        SR.sprite = pressedImage;
+        yield return new WaitForSeconds(0.15f);
+        SR.sprite = normalImage;
     }
 
     public bool accuracyScoring(float clapTime, Bar currentBar)

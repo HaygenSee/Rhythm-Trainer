@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -13,8 +14,6 @@ public class GameManager : MonoBehaviour
     ScoreManager scoreManager;
     UIManager _UIManager;
     Player _Player;
-    public bool _playingSong = false;
-    public bool countdownDone = false;
     private bool firstBarSpawned = false;
     private List<GameObject> notesSpawned;
     private float songSamplesPerBeat;
@@ -26,6 +25,7 @@ public class GameManager : MonoBehaviour
     public GameObject resultsPage;
     private Turn currentTurn;
     private GameState currentGameState;
+    private string levelScoreKey;
 
     void Awake()
     {
@@ -40,9 +40,18 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Scene scene = SceneManager.GetActiveScene();
+        if (scene.name == "Easy")
+        {
+            levelScoreKey = "easyHighscore";
+        }
+        else if (scene.name == "Consistency Test")
+        {
+            levelScoreKey = "definitelyEasyHighscore";
+        }
         fullChart = chartReader.randomiseBarOrder(true);
         audioManager.songBpm = chartReader.bpm;
-        StartCoroutine(CountdownThenStartSong());
+
         Invoke("byeReady", 2.0f);
 
         audioManager.samplesPerBeat = audioManager.FindSamplesPerBeat(audioManager.musicSource);
@@ -150,10 +159,17 @@ public class GameManager : MonoBehaviour
             {
                 if (currentTurn == Turn.Opponent)
                 {
-                    if (enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop))
+                    if (PlayerPrefs.GetInt("audioQues", 1) == 1)
                     {
-                        enemyObject.Clap();
+                        if (enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop))
+                        {
+                            enemyObject.Clap();
+                        }
                     }
+                    else
+                    { 
+                    spriteManager.AudioQueHintOn();
+                    }   
                 }
                 else
                 {
@@ -162,7 +178,7 @@ public class GameManager : MonoBehaviour
                     _Player.noTapMissCheck(beatInLoop, fullChart[chartBarIndex]);
                 }
 
-                if (Input.GetKeyDown(_Player.keyToPressA) || Input.GetKeyDown(_Player.keyToPressB))
+                if ((Input.anyKeyDown || Input.anyKeyDown) && !(Input.GetKeyDown(KeyCode.Escape)) && currentGameState == GameState.Playing)
                 {
                     if (currentTurn == Turn.Opponent)
                     {
@@ -205,8 +221,15 @@ public class GameManager : MonoBehaviour
             spriteManager.SFXVolumeBar.SetActive(false);
             spriteManager.toggleHint(false);
             _UIManager.pauseButton.SetActive(false);
-            scoreManager.calculateResults(_Player.perfectHits, _Player.greatHits, _Player.misses, maxScore, _Player.earlyNotes, _Player.lateNotes);
-            resultsPage.SetActive(true);
+            if (scoreManager.calculateResults(_Player.perfectHits, _Player.greatHits, _Player.misses, maxScore, _Player.earlyNotes, _Player.lateNotes, levelScoreKey))
+            {
+                resultsPage.SetActive(true);
+                scoreManager.highscoreText.SetActive(true);
+            }
+            else
+            {
+                resultsPage.SetActive(true);
+            }
         }
     }
 

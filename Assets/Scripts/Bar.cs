@@ -13,14 +13,21 @@ public class Bar
         string[] notes = pattern.Split(" ");
         foreach (string note in notes)
         {
-            if (note.Contains("X")) {
+            if (note.Contains("X"))
+            {
                 noteCount += 1;
             }
-            else if (note.Contains("D")) {
+            else if (note.Contains("D"))
+            {
                 noteCount += 2;
             }
-            else if (note.Contains("Q")) {
+            else if (note.Contains("Q"))
+            {
                 noteCount += 4;
+            }
+            else if (note.Contains("T"))
+            {
+                noteCount += 3;
             }
         }
         return noteCount;
@@ -32,45 +39,56 @@ public class Bar
 
         string[] notes = pattern.Split(" ");
 
-        foreach (string note in notes) {
+        foreach (string note in notes)
+        {
             float duration = calculateDuration(note);
             bool isRest = note.Contains("R");
             bool isNote = note.Contains("X");
-            // for double/ quaduple 8th or 16th notes
+            // for double/ quaduple 8th or 16th notes and triple 8th notes
             bool isDoubleNote = note.Contains("D");
             bool isQuadNote = note.Contains("Q");
+            bool isTriplet = note.Contains("T");
 
-            if (isNote) {
+            if (isNote)
+            {
                 timings.Add(currentBeat);
                 currentBeat += duration;
             }
 
-            else if (isRest) {
-                if (includeRests) {
+            else if (isRest)
+            {
+                if (includeRests)
+                {
                     timings.Add(currentBeat);
                     currentBeat += duration;
                 }
-                else {
+                else
+                {
                     currentBeat += duration;
                 }
 
             }
 
-            if (isDoubleNote) {
+            if (isDoubleNote)
+            {
                 timings.Add(currentBeat);
-                if (includeDuplicates) {
+                if (includeDuplicates)
+                {
                     currentBeat += duration;
                     timings.Add(currentBeat);
                     currentBeat += duration;
                 }
-                else {
+                else
+                {
                     float doubleDuration = duration * 2;
                     currentBeat += doubleDuration;
                 }
             }
-            if (isQuadNote) {
+            if (isQuadNote)
+            {
                 timings.Add(currentBeat);
-                if (includeDuplicates) {
+                if (includeDuplicates)
+                {
                     for (int i = 0; i < 3; i++)
                     {
                         currentBeat += duration;
@@ -78,9 +96,31 @@ public class Bar
                     }
                     currentBeat += duration;
                 }
-                else {
+                else
+                {
                     float quadDuration = duration * 4;
                     currentBeat += quadDuration;
+                }
+            }
+
+            if (isTriplet)
+            {
+                timings.Add(currentBeat);
+                if (includeDuplicates)
+                {
+                    float startingBeat = currentBeat;
+                    float endingBeat = currentBeat + 1f;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        currentBeat += 1f / 3;
+                        timings.Add(currentBeat);
+                    }
+                    currentBeat = endingBeat;
+
+                }
+                else
+                {
+                    currentBeat += duration;
                 }
             }
         }

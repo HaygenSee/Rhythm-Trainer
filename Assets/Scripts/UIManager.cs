@@ -2,28 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     AudioManager audioManager;
     GameManager gameManager;
-    public bool gamePaused;
+    public bool gamePaused = false;
     public GameObject pauseScreen;
     public GameObject pauseButton;
     public GameObject settingsUI;
-    public AudioSource testSFX;
-    public AudioClip clapTestSound;
+    
+
     void Awake()
     {
         GameObject audioObject = GameObject.FindGameObjectWithTag("Audio");
-        GameObject gameManager = GameObject.FindGameObjectWithTag("GameManager");
+        GameObject gameManagerObject = GameObject.FindGameObjectWithTag("GameManager");
 
         if (audioObject != null)
-        {
             audioManager = audioObject.GetComponent<AudioManager>();
-        }
-        gamePaused = false;
+        if (gameManagerObject != null)
+            gameManager = gameManagerObject.GetComponent<GameManager>();
     }
+
     public void OnRestartPress()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -58,24 +59,20 @@ public class UIManager : MonoBehaviour
         pauseScreen.SetActive(true);
         pauseButton.SetActive(false);
     }
+
     public void openSettings()
     {
         settingsUI.SetActive(true);
     }
+
     public void closeSettings()
     {
         settingsUI.SetActive(false);
     }
 
-    public void clapTest()
-    {
-        testSFX.PlayOneShot(clapTestSound);
-    }
-
+    
     public void quitGame()
     {
         Application.Quit();
     }
-
-    
 }
