@@ -65,6 +65,7 @@ public class SpriteManager : MonoBehaviour
             Vector3 spawnPos = new Vector3(xPos, 2.85f, 0f);
 
             GameObject instance = Instantiate(symbolToSpawn, spawnPos, Quaternion.identity);
+            // attach pulse component?
             if (note.Contains('.'))
             {
                 GameObject instanceDot = Instantiate(dotGO, spawnPos, Quaternion.identity);

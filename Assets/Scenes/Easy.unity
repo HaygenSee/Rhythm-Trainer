@@ -4227,7 +4227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b6ef926f648b1b4fbc4153e801c47f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFile: {fileID: 4900000, guid: 39f7995699e01fd4baefa07cc865acd1, type: 3}
+  jsonFile: {fileID: 4900000, guid: 6f4efc52f84da0142a7d5ecabdc80ea6, type: 3}
   barCount: 0
 --- !u!4 &1473797779
 Transform:
@@ -4276,6 +4276,7 @@ MonoBehaviour:
   enemyObject: {fileID: 42740292}
   _readyText: {fileID: 2042938382}
   resultsPage: {fileID: 766832845}
+  _showLogs: 0
 --- !u!4 &1520676456
 Transform:
   m_ObjectHideFlags: 0
@@ -6246,6 +6247,7 @@ MonoBehaviour:
   CD_3to1: {fileID: 8300000, guid: ed86de8b56318ba49b5aa648cef7f58c, type: 3}
   CD_Go: {fileID: 8300000, guid: 21f5ebc182c5df249ae7160b1b0cc654, type: 3}
   EnemyClap: {fileID: 8300000, guid: 4c3cc7eb133d86940bfcf8d80452d39d, type: 3}
+  bpmClap: {fileID: 8300000, guid: 3900735cefabe304db0e3298608e50a9, type: 3}
   _trigger:
     m_PersistentCalls:
       m_Calls:

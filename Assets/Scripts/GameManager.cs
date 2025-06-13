@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     private List<GameObject> notesSpawned;
     private float songSamplesPerBeat;
     private List<Bar> fullChart;
-    private int currentBarIndex = 0; private int chartBarIndex = 0; private float timeSignature = 4f; 
+    private int currentBarIndex = 0; private int chartBarIndex = 0; private float timeSignature = 4f;
     private int totalNotes = 0; private int maxScore = 0;
     public Enemy enemyObject;
     public TMP_Text _readyText;
@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     private Turn currentTurn;
     private GameState currentGameState;
     private string levelScoreKey;
+    [SerializeField]
+    private bool _showLogs;
 
     void Awake()
     {
@@ -35,20 +37,12 @@ public class GameManager : MonoBehaviour
         spriteManager = GameObject.FindGameObjectWithTag("SpriteManager").GetComponent<SpriteManager>();
         scoreManager = GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ScoreManager>();
         _UIManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<UIManager>();
-        
+
     }
 
     void Start()
     {
-        Scene scene = SceneManager.GetActiveScene();
-        if (scene.name == "Easy")
-        {
-            levelScoreKey = "easyHighscore";
-        }
-        else if (scene.name == "Consistency Test")
-        {
-            levelScoreKey = "definitelyEasyHighscore";
-        }
+        setLevelKey();
         fullChart = chartReader.randomiseBarOrder(true);
         audioManager.songBpm = chartReader.bpm;
 
@@ -60,7 +54,7 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(CountdownThenStartSong());
 
-        Debug.Log($"Bars in chart: {chartReader.barCount}");
+        Log($"Bars in chart: {chartReader.barCount}");
 
         foreach (Bar bar in fullChart)
         {
@@ -68,8 +62,8 @@ public class GameManager : MonoBehaviour
         }
         maxScore = totalNotes * 300;
 
-        Debug.Log($"Total notes: {totalNotes}");
-        
+        Log($"Total notes: {totalNotes}");
+
     }
 
     public enum Turn
@@ -89,15 +83,30 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentGameState == GameState.Playing)
+        if (currentGameState == GameState.Countdown)
+        {
+            if ((Input.anyKeyDown || Input.anyKeyDown) && !(Input.GetKeyDown(KeyCode.Escape)))
+            {
+                if (!_Player.muteClap) { audioManager.playFX(audioManager.clap); }
+                _Player.Clap();
+            }
+        }
+        else if (currentGameState == GameState.Playing)
         {
             _UIManager.pauseButton.SetActive(true);
+
+            if ((Input.anyKeyDown || Input.anyKeyDown) && !(Input.GetKeyDown(KeyCode.Escape)))
+            {
+                if (!_Player.muteClap) { audioManager.playFX(audioManager.clap); }
+                _Player.Clap();
+            }
 
             float beatInLoop = audioManager.loopBeat();
             int newBarIndex = Mathf.FloorToInt(audioManager.currentBeatInSong / timeSignature);
 
             if (!firstBarSpawned)
             {
+                audioManager.playFX(audioManager.bpmClap);
                 notesSpawned = spriteManager.DrawBar(fullChart[0]);
                 spriteManager.toggleTetoLight(true);
                 firstBarSpawned = true;
@@ -167,9 +176,9 @@ public class GameManager : MonoBehaviour
                         }
                     }
                     else
-                    { 
-                    spriteManager.AudioQueHintOn();
-                    }   
+                    {
+                        spriteManager.AudioQueHintOn();
+                    }
                 }
                 else
                 {
@@ -182,7 +191,7 @@ public class GameManager : MonoBehaviour
                 {
                     if (currentTurn == Turn.Opponent)
                     {
-                        Debug.Log("Not your turn yet! - lose health");
+                        Log("Not your turn yet! - lose health");
                     }
                     else
                     {
@@ -233,7 +242,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator CountdownThenStartSong() {
+    private IEnumerator CountdownThenStartSong()
+    {
         currentGameState = GameState.Countdown;
         yield return new WaitForSeconds(2f); // delay before countdown (optional)
 
@@ -241,7 +251,7 @@ public class GameManager : MonoBehaviour
 
         audioManager.playSong();
         currentGameState = GameState.Playing;
-    }      
+    }
 
     private IEnumerator FadeOut(AudioSource audioSource, float fadeTime)
     {
@@ -258,7 +268,30 @@ public class GameManager : MonoBehaviour
         audioSource.volume = startVolume;
     }
 
-    void byeReady() {
+
+    void byeReady()
+    {
         _readyText.enabled = false;
+    }
+
+    private void setLevelKey()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        if (scene.name == "Easy")
+        {
+            levelScoreKey = "easyHighscore";
+        }
+        else if (scene.name == "Consistency Test")
+        {
+            levelScoreKey = "definitelyEasyHighscore";
+        }
+    }
+
+    void Log(object message)
+    {
+        if (_showLogs)
+        {
+            Debug.Log(message);
+        }
     }
 }

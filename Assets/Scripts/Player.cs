@@ -35,16 +35,8 @@ public class Player : MonoBehaviour
         misses = 0;
     }
 
-    void Update()
-    {
-        if ((Input.anyKeyDown || Input.anyKeyDown) && !(Input.GetKeyDown(KeyCode.Escape)))
-        {
-            if (!muteClap) { audioManager.playFX(audioManager.clap); }
-            Clap();
-        } 
-    }
 
-    private void Clap()
+    public void Clap()
     {
         StartCoroutine(ClapRoutine());
     }

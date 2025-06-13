@@ -37,6 +37,13 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
+    public void pulseNote(List<GameObject> noteGameObjects, Bar currentBar, float currentBeat)
+    {
+        // same as claptopattern but pulses
+
+    }
+
+
     // reset clapped beats on each bar
     public void enemyNextBar()
     {

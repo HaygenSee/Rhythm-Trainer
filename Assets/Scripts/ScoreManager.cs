@@ -19,7 +19,6 @@ public class ScoreManager : MonoBehaviour
     private void Start()
     {
         Scene scene = SceneManager.GetActiveScene();
-        Debug.Log(scene.name);
         if (scene.name == "Easy")
         {
             highscore = PlayerPrefs.GetInt("easyHighscore");
