@@ -172,6 +172,8 @@ public class GameManager : MonoBehaviour
                     {
                         if (enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop))
                         {
+                            spriteManager.quePointer.SetActive(true);
+                            enemyObject.setArrowLocation(spriteManager.quePointer, fullChart[chartBarIndex], beatInLoop);
                             enemyObject.Clap();
                         }
                     }
@@ -182,6 +184,7 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
+                    spriteManager.quePointer.SetActive(false);
                     spriteManager.toggleTetoLight(false);
                     spriteManager.togglePlayerLight(true);
                     _Player.noTapMissCheck(beatInLoop, fullChart[chartBarIndex]);

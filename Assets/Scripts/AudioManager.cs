@@ -9,9 +9,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public AudioSource musicSource;
     [SerializeField] public AudioSource SFXSource;
 
-    [Header("Audio Clips")]
-    public AudioClip bgm;
     public float songBpm;
+
+    [Header("Audio Clips")]
     public AudioClip clap;
     public AudioClip CD_3to1;
     public AudioClip CD_Go;
@@ -30,7 +30,7 @@ public class AudioManager : MonoBehaviour
     void Update() {
         // pulsate
         trackBeat(musicSource, samplesPerBeat);
-        tapBeat(musicSource, samplesPerBeat);
+        metronomeTap(musicSource, samplesPerBeat);
         currentBeatInSong = musicSource.timeSamples / samplesPerBeat;
     }
 
@@ -72,7 +72,7 @@ public class AudioManager : MonoBehaviour
         }
         return currentBeat;
     }
-    private void tapBeat(AudioSource _audioSource, float _samplesPerBeat) {
+    private void metronomeTap(AudioSource _audioSource, float _samplesPerBeat) {
         int currentBeat = Mathf.FloorToInt(_audioSource.timeSamples / _samplesPerBeat) + 1;
         if (currentBeat != lastClapBeat) {
             lastClapBeat = currentBeat;

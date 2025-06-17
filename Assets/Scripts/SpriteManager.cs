@@ -18,6 +18,7 @@ public class SpriteManager : MonoBehaviour
     public GameObject crotchetRestGO; public GameObject quaverRestGO;
     public GameObject tripletGO;
     public GameObject semiquaverRestGO; public GameObject dotGO;
+    public GameObject quePointer;
 
     [Header("Spotlight Objects")]
     public GameObject tetoLight; public GameObject playerLight;
@@ -65,7 +66,6 @@ public class SpriteManager : MonoBehaviour
             Vector3 spawnPos = new Vector3(xPos, 2.85f, 0f);
 
             GameObject instance = Instantiate(symbolToSpawn, spawnPos, Quaternion.identity);
-            // attach pulse component?
             if (note.Contains('.'))
             {
                 GameObject instanceDot = Instantiate(dotGO, spawnPos, Quaternion.identity);

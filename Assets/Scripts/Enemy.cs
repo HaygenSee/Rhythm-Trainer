@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     ChartReader chartReader;
     public int Health;
     private HashSet<float> clappedBeats = new HashSet<float>();
+    private HashSet<float> pointedBeats = new HashSet<float>();
     void Awake()
     {
         chartReader = GameObject.FindGameObjectWithTag("ChartReader").GetComponent<ChartReader>();
@@ -37,16 +38,28 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public void pulseNote(List<GameObject> noteGameObjects, Bar currentBar, float currentBeat)
+    public void setArrowLocation(GameObject pointer, Bar currentBar, float currentBeat)
     {
-        // same as claptopattern but pulses
+        List<float> xAxisValues = currentBar.getPatternTimings(true, true);
 
+        float timingWindow = 0.05f;
+
+        foreach (float beat in xAxisValues)
+        {
+            if (Mathf.Abs(currentBeat - beat) <= timingWindow && !pointedBeats.Contains(beat))
+            {
+                pointedBeats.Add(beat);
+                pointer.transform.position = new Vector3(beat - 3f, 2.3f, 0f);
+                return;
+            }
+        }
     }
 
 
-    // reset clapped beats on each bar
+    // reset clapped/ pointed beats on each bar
     public void enemyNextBar()
     {
+        pointedBeats.Clear();
         clappedBeats.Clear();
     }
 
