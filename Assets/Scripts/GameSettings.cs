@@ -9,7 +9,7 @@ public class GameSettings : MonoBehaviour
     public Toggle toggleQues;
     [Header("Highscores")]
     [SerializeField]
-    private Text easyHighscore, defoEasyHighscore;
+    private Text tutorialHighscore, easyHighscore, defoEasyHighscore;
     public AudioSource testSFX;
     public AudioClip clapTestSound;
 
@@ -30,8 +30,12 @@ public class GameSettings : MonoBehaviour
         if (!PlayerPrefs.HasKey("definitelyEasyHighscore"))
             PlayerPrefs.SetInt("definitelyEasyHighscore", 0);
 
+        if (!PlayerPrefs.HasKey("tutorialHighscore"))
+            PlayerPrefs.SetInt("tutorialHighscore", 0);
+
         easyHighscore.text = "Highscore: " + getEasyHighScore().ToString();
         defoEasyHighscore.text = "Highscore: " + getDefinitelyEasyHighScore().ToString();
+        tutorialHighscore.text = "Highscore: " + getTutorialHighScore().ToString();
     }
 
 
@@ -48,6 +52,11 @@ public class GameSettings : MonoBehaviour
     private int getDefinitelyEasyHighScore()
     {
         return PlayerPrefs.GetInt("definitelyEasyHighscore");
+    }
+
+    private int getTutorialHighScore()
+    {
+        return PlayerPrefs.GetInt("tutorialHighscore");
     }
     
     public void clapTest()

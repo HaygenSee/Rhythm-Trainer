@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     UIManager _UIManager;
     Player _Player;
     private bool firstBarSpawned = false;
+    private bool isTutorial = false;
     private List<GameObject> notesSpawned;
     private float songSamplesPerBeat;
     private List<Bar> fullChart;
@@ -25,9 +26,13 @@ public class GameManager : MonoBehaviour
     public GameObject resultsPage;
     private Turn currentTurn;
     private GameState currentGameState;
+    private GameObject pointerObject;
+    private GameObject GoIndicateObject;
     private string levelScoreKey;
     [SerializeField]
     private bool _showLogs;
+    private Vector3 pointerStartSize;
+    private Vector3 goStartSize;
 
     void Awake()
     {
@@ -43,8 +48,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         setLevelKey();
-        fullChart = chartReader.randomiseBarOrder(true);
+        if (isTutorial) fullChart = chartReader.randomiseBarOrder(false);
+        if (!isTutorial) fullChart = chartReader.randomiseBarOrder(true);
         audioManager.songBpm = chartReader.bpm;
+        pointerObject = spriteManager.quePointer;
+        GoIndicateObject = spriteManager.GoIndicator;
+        pointerStartSize = pointerObject.transform.localScale;
+        goStartSize = GoIndicateObject.transform.localScale;
 
         Invoke("byeReady", 2.0f);
 
@@ -83,6 +93,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GoIndicateObject.transform.localScale = Vector3.Lerp(GoIndicateObject.transform.localScale, goStartSize, Time.deltaTime * 5.0f);
+        pointerObject.transform.localScale = Vector3.Lerp(pointerObject.transform.localScale, pointerStartSize, Time.deltaTime * 5.0f);
         if (currentGameState == GameState.Countdown)
         {
             if ((Input.anyKeyDown || Input.anyKeyDown) && !(Input.GetKeyDown(KeyCode.Escape)))
@@ -93,6 +105,7 @@ public class GameManager : MonoBehaviour
         }
         else if (currentGameState == GameState.Playing)
         {
+            audioManager.metronomeTap(audioManager.musicSource, songSamplesPerBeat, spriteManager.GoIndicator, goStartSize);
             _UIManager.pauseButton.SetActive(true);
 
             if ((Input.anyKeyDown || Input.anyKeyDown) && !(Input.GetKeyDown(KeyCode.Escape)))
@@ -172,8 +185,8 @@ public class GameManager : MonoBehaviour
                     {
                         if (enemyObject.clapToPattern(fullChart[chartBarIndex], beatInLoop))
                         {
-                            spriteManager.quePointer.SetActive(true);
-                            enemyObject.setArrowLocation(spriteManager.quePointer, fullChart[chartBarIndex], beatInLoop);
+                            pointerObject.SetActive(true);
+                            enemyObject.setArrowLocation(pointerStartSize, pointerObject, fullChart[chartBarIndex], beatInLoop);
                             enemyObject.Clap();
                         }
                     }
@@ -184,7 +197,7 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    spriteManager.quePointer.SetActive(false);
+                    pointerObject.SetActive(false);
                     spriteManager.toggleTetoLight(false);
                     spriteManager.togglePlayerLight(true);
                     _Player.noTapMissCheck(beatInLoop, fullChart[chartBarIndex]);
@@ -232,6 +245,8 @@ public class GameManager : MonoBehaviour
             spriteManager.musicVolumeBar.SetActive(false);
             spriteManager.SFXVolumeBar.SetActive(false);
             spriteManager.toggleHint(false);
+            spriteManager.tutorialText.SetActive(false);
+            spriteManager.timeSignatureText.SetActive(false);
             _UIManager.pauseButton.SetActive(false);
             if (scoreManager.calculateResults(_Player.perfectHits, _Player.greatHits, _Player.misses, maxScore, _Player.earlyNotes, _Player.lateNotes, levelScoreKey))
             {
@@ -287,6 +302,11 @@ public class GameManager : MonoBehaviour
         else if (scene.name == "Consistency Test")
         {
             levelScoreKey = "definitelyEasyHighscore";
+        }
+        else if (scene.name == "Tutorial")
+        {
+            isTutorial = true;
+            levelScoreKey = "Tutorial";
         }
     }
 

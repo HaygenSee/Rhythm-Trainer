@@ -9,7 +9,7 @@ public class SpriteManager : MonoBehaviour
     [Header("Hit Game Objects")]
     public GameObject perfectHit; public GameObject greatHit; public GameObject missHit;
     public GameObject tellLate; public GameObject tellEarly;
-    public GameObject tellAudioQues;
+    public GameObject tellAudioQues; public GameObject GoIndicator;
 
     [Header("Note Symbols Game Objects")]
     public GameObject crotchetGO; public GameObject quaverGO; public GameObject semiquaverGO;
@@ -24,6 +24,7 @@ public class SpriteManager : MonoBehaviour
     public GameObject tetoLight; public GameObject playerLight;
     public GameObject hintText;
     public GameObject musicVolumeBar, SFXVolumeBar;
+    public GameObject tutorialText, timeSignatureText;
 
     public void pulseOnAppear(GameObject _timingText)
     {

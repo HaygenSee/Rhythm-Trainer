@@ -2,48 +2,48 @@
   "bpm": 90,
   "bars": [
     {
-      "id": "bar1",
-      "pattern": "X X D/2 X"
-    },
-    {
-      "id": "bar1",
-      "pattern": "Q/2 D/2 X"
-    },
-    {
-      "id": "bar2",
-      "pattern": "X D/2 X X"
-    },
-    {
-      "id": "bar3",
-      "pattern": "X. X/2 X X"
-    },
-    {
-      "id": "bar4",
-      "pattern": "D/2 X X X"
-    },
-    {
-      "id": "bar5",
+      "id": "bar0",
       "pattern": "X X X X"
     },
     {
+      "id": "bar1",
+      "pattern": "X X X X"
+    },
+    {
+      "id": "bar2",
+      "pattern": "X X X X"
+    },
+    {
+      "id": "bar3",
+      "pattern": "X X X X"
+    },
+    {
+      "id": "bar4",
+      "pattern": "X D/2 X X"
+    },
+    {
+      "id": "bar5",
+      "pattern": "X D/2 X X"
+    },
+    {
       "id": "bar6",
-      "pattern": "D/2 X R X"
+      "pattern": "X R X X"
     },
     {
       "id": "bar7",
-      "pattern": "X R X R"
+      "pattern": "X R X X"
     },
     {
       "id": "bar8",
-      "pattern": "Q/2 D/2 X"
+      "pattern": "X. X/2 X X"
     },
     {
       "id": "bar9",
-      "pattern": "X X D/2 X"
+      "pattern": "X. X/2 X X"
     },
     {
       "id": "bar10",
-      "pattern": "X R D/2 X"
+      "pattern": "X R Q/4 X"
     }
   ]
 }

@@ -40,6 +40,11 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene("Consistency Test");
     }
 
+    public void loadTutorialLevel()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
+
     public void backToMenu()
     {
         SceneManager.LoadScene("menu");

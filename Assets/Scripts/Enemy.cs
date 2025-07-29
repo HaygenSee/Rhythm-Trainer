@@ -38,7 +38,7 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    public void setArrowLocation(GameObject pointer, Bar currentBar, float currentBeat)
+    public void setArrowLocation(Vector3 pointerStartSize, GameObject pointer, Bar currentBar, float currentBeat)
     {
         List<float> xAxisValues = currentBar.getPatternTimings(true, true);
 
@@ -50,6 +50,7 @@ public class Enemy : MonoBehaviour
             {
                 pointedBeats.Add(beat);
                 pointer.transform.position = new Vector3(beat - 3f, 2.3f, 0f);
+                pointer.transform.localScale = pointerStartSize * 1.5f;
                 return;
             }
         }

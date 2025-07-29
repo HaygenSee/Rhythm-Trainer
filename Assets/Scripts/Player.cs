@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private Animator _animator;
     AudioManager audioManager;
     SpriteManager spriteManager;
     public Transform enemyTransform;
@@ -42,10 +43,11 @@ public class Player : MonoBehaviour
     }
     private IEnumerator ClapRoutine()
     {
-        SR.sprite = pressedImage;
+        _animator.SetBool("activateClap", true);
         yield return new WaitForSeconds(0.15f);
-        SR.sprite = normalImage;
+        _animator.SetBool("activateClap", false);
     }
+
 
     public bool accuracyScoring(float clapTime, Bar currentBar)
     {
@@ -82,6 +84,7 @@ public class Player : MonoBehaviour
                     misses += 1;
                     spawnEffect(spriteManager.missHit);
                     showEarlyLate(spriteManager.tellLate);
+                    takeDamage();
                     return false;
                 }
 
@@ -113,6 +116,7 @@ public class Player : MonoBehaviour
                     misses += 1;
                     spawnEffect(spriteManager.missHit);
                     showEarlyLate(spriteManager.tellEarly);
+                    takeDamage();
                     return false;
                 }
             }
@@ -134,6 +138,7 @@ public class Player : MonoBehaviour
                 spawnEffect(spriteManager.missHit);
                 missedNotes += 1;
                 misses += 1;
+                takeDamage();
             }
         }
     }
@@ -157,7 +162,7 @@ public class Player : MonoBehaviour
     private void showEarlyLate(GameObject timingObject)
     {
         Vector3 spawnPosition;
-    
+
         if (timingObject.name == "early")
         {
             spawnPosition = transform.position + new Vector3(-1f, 1f, 0f);
@@ -166,10 +171,22 @@ public class Player : MonoBehaviour
         {
             spawnPosition = transform.position + new Vector3(1f, 1f, 0f);
         }
-    
+
         GameObject offsetText = Instantiate(timingObject, spawnPosition, Quaternion.identity);
         spriteManager.pulseOnAppear(offsetText);
         Destroy(offsetText, 0.45f);
+    }
+
+    public void takeDamage()
+    {
+        StartCoroutine(DamageFlash());
+    }
+
+    private IEnumerator DamageFlash()
+    {
+        SR.color = Color.red;
+        yield return new WaitForSeconds(0.05f);
+        SR.color = Color.white;
     }
 }
 

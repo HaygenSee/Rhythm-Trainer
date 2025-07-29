@@ -9,6 +9,8 @@ MonoImporter:
   - missHit: {fileID: 846610942534771036, guid: 8028d75e16547e7469c1686cf3d66af3, type: 3}
   - tellLate: {fileID: 117438004685927495, guid: 5cad79a9e728fe945be87c375d983094, type: 3}
   - tellEarly: {fileID: 8561384228520118107, guid: a901c799823e91f4baa7bd664340c6ae, type: 3}
+  - tellAudioQues: {instanceID: 0}
+  - tellCountdown: {fileID: 3260060321210745443, guid: 6a4c044198a01634493dc287b003e5c0, type: 3}
   - crotchetGO: {fileID: 1208790381046366625, guid: 3b226922a299ee24cb62b61e2355e2a9, type: 3}
   - quaverGO: {fileID: 1591070046473753471, guid: 4a87c8ad8f512654384958e23ff8a22a, type: 3}
   - semiquaverGO: {fileID: 8900220959878927500, guid: deb19ee5592f4fa48b672f1f62dad79f, type: 3}
@@ -21,6 +23,7 @@ MonoImporter:
   - tripletGO: {fileID: 422816107937930418, guid: 648f627b81ea7fc469ffd6ed2a47e8e6, type: 3}
   - semiquaverRestGO: {fileID: 4185912422162266298, guid: 9b80087a70efb7c40af4205af2538a79, type: 3}
   - dotGO: {fileID: 2411500214777934065, guid: a24e1d98929b1d841b09871ebb32e55e, type: 3}
+  - quePointer: {instanceID: 0}
   - tetoLight: {instanceID: 0}
   - playerLight: {instanceID: 0}
   - hintText: {instanceID: 0}

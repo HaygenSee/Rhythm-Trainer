@@ -27,6 +27,9 @@ public class ScoreManager : MonoBehaviour
         {
             highscore = PlayerPrefs.GetInt("definitelyEasyHighscore");
         }
+        else if (scene.name == "Tutorial") {
+            highscore = PlayerPrefs.GetInt("tutorialHighscore");
+        }
     }
 
     public bool calculateResults(int perfects, int greats, int misses, int totalMaxScore, int earlys, int lates, string levelScoreKey)

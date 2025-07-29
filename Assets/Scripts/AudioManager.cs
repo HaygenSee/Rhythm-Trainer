@@ -24,13 +24,13 @@ public class AudioManager : MonoBehaviour
     public float samplesPerBeat;
     private int lastBeat = -1;
     private int lastClapBeat = -1;
+    private int lastGoBeat = -1;
     public float currentBeatInSong;
     public GameObject gameManagerObject;
 
     void Update() {
         // pulsate
         trackBeat(musicSource, samplesPerBeat);
-        metronomeTap(musicSource, samplesPerBeat);
         currentBeatInSong = musicSource.timeSamples / samplesPerBeat;
     }
 
@@ -72,12 +72,31 @@ public class AudioManager : MonoBehaviour
         }
         return currentBeat;
     }
-    private void metronomeTap(AudioSource _audioSource, float _samplesPerBeat) {
+    public void metronomeTap(AudioSource _audioSource, float _samplesPerBeat, GameObject GoText, Vector3 goTextStartSize)
+    {
         int currentBeat = Mathf.FloorToInt(_audioSource.timeSamples / _samplesPerBeat) + 1;
-        if (currentBeat != lastClapBeat) {
+        if (currentBeat != lastClapBeat)
+        {
             lastClapBeat = currentBeat;
             playFX(bpmClap);
         }
+
+        if (currentBeat % 4 == 0 && currentBeat != lastGoBeat)
+        {
+            if (currentBeat % 8 != 0)
+            {
+                lastGoBeat = currentBeat;
+                GoText.transform.localScale = goTextStartSize * 1.5f;
+                StartCoroutine(ShowGoText(GoText));
+            }
+        }
+    }
+
+    private IEnumerator ShowGoText(GameObject goText)
+    {
+        goText.SetActive(true);
+        yield return new WaitForSeconds(0.5f); 
+        goText.SetActive(false);
     }
 
     public IEnumerator PlayDynamicCountdown(int beatCount = 4)
