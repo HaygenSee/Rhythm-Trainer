@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     public KeyCode keyToPressB;
     public float offset;
     private float perfectWindow = 0.1f;
-    private float greatWindow = 0.24f;
+    private float greatWindow = 0.25f;
     public int perfectHits, greatHits, misses;
     public int earlyNotes = 0;
     public int lateNotes = 0;
@@ -132,7 +132,7 @@ public class Player : MonoBehaviour
         {
             if (clappedBeats.Contains(beat)) continue;
 
-            if (currentBeat - beat > 0.23)
+            if (currentBeat - beat > 0.25)
             {
                 clappedBeats.Add(beat);
                 spawnEffect(spriteManager.missHit);
@@ -165,11 +165,11 @@ public class Player : MonoBehaviour
 
         if (timingObject.name == "early")
         {
-            spawnPosition = transform.position + new Vector3(-1f, 1f, 0f);
+            spawnPosition = transform.position + new Vector3(-1.5f, 1f, 0f);
         }
         else
         {
-            spawnPosition = transform.position + new Vector3(1f, 1f, 0f);
+            spawnPosition = transform.position + new Vector3(1.5f, 1f, 0f);
         }
 
         GameObject offsetText = Instantiate(timingObject, spawnPosition, Quaternion.identity);
