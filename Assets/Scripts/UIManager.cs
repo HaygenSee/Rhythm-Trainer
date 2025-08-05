@@ -39,6 +39,10 @@ public class UIManager : MonoBehaviour
     {
         SceneManager.LoadScene("Consistency Test");
     }
+    public void loadIntermediateLevel()
+    {
+        SceneManager.LoadScene("Intermediate");
+    }
 
     public void loadTutorialLevel()
     {

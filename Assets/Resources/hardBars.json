@@ -2,36 +2,36 @@
   "bpm": 120,
   "bars": [
     {
+      "id": "bar1",
+      "pattern": "T T T T"
+    },
+    {
       "id": "bar2",
-      "pattern": "X/2 X/2 X/2 X/2 X/2 X/2 X/2 X/2"
+      "pattern": "X R/2 X/2 Q/4 X"
     },
     {
       "id": "bar3",
-      "pattern": "X R X X"
+      "pattern": "X/2. X/4 Q/4 X/2. X/4 X"
     },
     {
       "id": "bar4",
-      "pattern": "X. X/2 X X"
+      "pattern": "Q/2 R R/4 D/4 R/4"
     },
     {
       "id": "bar5",
-      "pattern": "X/2 X X X X/2"
+      "pattern": "X/2. X/4 T X/2. X/4 Q/4"
     },
     {
       "id": "bar6",
-      "pattern": "X/2 X/2 X/2 X/2 X/2 X/2 X"
+      "pattern": "D/4 R/4 X/4 T Q/4 D/2"
     },
     {
       "id": "bar7",
-      "pattern": "X R/2 X/2 X R/2 X/2"
-    },
-    {
-      "id": "bar7",
-      "pattern": "X R/2 X/2 X R/2 X/2"
+      "pattern": "D/4 R/4 X/4 Q/4 D/4 R/2 D/4"
     },
     {
       "id": "bar8",
-      "pattern": "R/2 X/2 X/4 X/4 R/2 X/4 X/4 X/2 X/2"
+      "pattern": "R/2 D/4 R/2 R/4 X/4 R/2 D/4 R/2 R/4 X/4"
     }
 
 

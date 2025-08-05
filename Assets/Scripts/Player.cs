@@ -48,81 +48,71 @@ public class Player : MonoBehaviour
         _animator.SetBool("activateClap", false);
     }
 
-
     public bool accuracyScoring(float clapTime, Bar currentBar)
     {
         List<float> timings = currentBar.getPatternTimings(false, true);
         clapTime = clapTime + offset - 4;
+    
+        float closestDiff = float.MaxValue;
+        float closestBeat = -1f;
+    
+        // Find the closest unmatched beat
         foreach (float beat in timings)
         {
             if (clappedBeats.Contains(beat)) continue;
-
-            if (clapTime >= beat)
+    
+            float diff = Mathf.Abs(clapTime - beat);
+            if (diff < closestDiff)
             {
-                float diff = Mathf.Abs(clapTime - beat);
-                if (diff <= perfectWindow)
-                {
-                    clappedBeats.Add(beat);
-                    lateNotes += 1;
-                    perfectHits += 1;
-                    spawnEffect(spriteManager.perfectHit);
-                    return true;
-                }
-                else if (diff <= greatWindow)
-                {
-                    clappedBeats.Add(beat);
-                    lateNotes += 1;
-                    greatHits += 1;
-                    spawnEffect(spriteManager.greatHit);
-                    showEarlyLate(spriteManager.tellLate);
-                    return true;
-                }
-                else
-                {
-                    clappedBeats.Add(beat);
-                    lateNotes += 1;
-                    misses += 1;
-                    spawnEffect(spriteManager.missHit);
-                    showEarlyLate(spriteManager.tellLate);
-                    takeDamage();
-                    return false;
-                }
+                closestDiff = diff;
+                closestBeat = beat;
+            }
+        }
 
+        if (closestBeat == -1f) return false;
+    
+        // Score based on closest difference
+        if (closestDiff <= perfectWindow)
+        {
+            clappedBeats.Add(closestBeat);
+            perfectHits += 1;
+            spawnEffect(spriteManager.perfectHit);
+            return true;
+        }
+        else if (closestDiff <= greatWindow)
+        {
+            clappedBeats.Add(closestBeat);
+            greatHits += 1;
+    
+            if (clapTime < closestBeat)
+            {
+                earlyNotes += 1;
+                showEarlyLate(spriteManager.tellEarly);
             }
             else
             {
-                float diff = Mathf.Abs(beat - clapTime);
-                if (diff <= perfectWindow)
-                {
-                    clappedBeats.Add(beat);
-                    earlyNotes += 1;
-                    perfectHits += 1;
-                    spawnEffect(spriteManager.perfectHit);
-                    return true;
-                }
-                else if (diff <= greatWindow)
-                {
-                    clappedBeats.Add(beat);
-                    earlyNotes += 1;
-                    greatHits += 1;
-                    spawnEffect(spriteManager.greatHit);
-                    showEarlyLate(spriteManager.tellEarly);
-                    return true;
-                }
-                else
-                {
-                    clappedBeats.Add(beat);
-                    earlyNotes += 1;
-                    misses += 1;
-                    spawnEffect(spriteManager.missHit);
-                    showEarlyLate(spriteManager.tellEarly);
-                    takeDamage();
-                    return false;
-                }
+                lateNotes += 1;
+                showEarlyLate(spriteManager.tellLate);
             }
+    
+            spawnEffect(spriteManager.greatHit);
+            return true;
         }
-        return false;
+        else
+        {
+            clappedBeats.Add(closestBeat);
+            misses += 1;
+    
+            if (clapTime < closestBeat) earlyNotes += 1;
+            else lateNotes += 1;
+    
+            spawnEffect(spriteManager.missHit);
+            showEarlyLate(clapTime < closestBeat ? spriteManager.tellEarly : spriteManager.tellLate);
+            takeDamage();
+            return false;
+        }
     }
+
 
     public void noTapMissCheck(float currentBeat, Bar currentBar)
     {

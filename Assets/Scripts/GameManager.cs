@@ -303,6 +303,10 @@ public class GameManager : MonoBehaviour
         {
             levelScoreKey = "definitelyEasyHighscore";
         }
+        else if (scene.name == "Intermediate")
+        {
+            levelScoreKey = "intermediateHighscore";
+        }
         else if (scene.name == "Tutorial")
         {
             isTutorial = true;

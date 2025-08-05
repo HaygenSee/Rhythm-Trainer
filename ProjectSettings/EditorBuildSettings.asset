@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Consistency Test.unity
     guid: 85f58238a459c0e41af970de15c6d8a3
+  - enabled: 1
+    path: Assets/Scenes/Intermediate.unity
+    guid: 2be9627095a6d62408a6dc40611b0a80
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 2469267d91e276a4c9f3f3248df7bda7, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: de2d5c6a9d07ce341891da662b555713, type: 3}

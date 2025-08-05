@@ -43,7 +43,11 @@
     },
     {
       "id": "bar10",
-      "pattern": "X R Q/4 X"
+      "pattern": "R X X D/2"
+    },
+    {
+      "id": "bar11",
+      "pattern": "X. X/2 X X"
     }
   ]
 }

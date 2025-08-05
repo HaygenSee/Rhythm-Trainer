@@ -27,8 +27,12 @@ public class ScoreManager : MonoBehaviour
         {
             highscore = PlayerPrefs.GetInt("definitelyEasyHighscore");
         }
-        else if (scene.name == "Tutorial") {
+        else if (scene.name == "Tutorial")
+        {
             highscore = PlayerPrefs.GetInt("tutorialHighscore");
+        }
+        else if (scene.name == "Intermediate") {
+            highscore = PlayerPrefs.GetInt("intermediateHighscore");
         }
     }
 

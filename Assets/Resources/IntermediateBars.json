@@ -1,0 +1,37 @@
+{
+  "bpm": 100,
+  "bars": [
+    {
+      "id": "bar1",
+      "pattern": "X. X/2 X X"
+    },
+    {
+      "id": "bar2",
+      "pattern": "Q/2 Q/2"
+    },
+    {
+      "id": "bar3",
+      "pattern": "D/2 X R D/2"
+    },
+    {
+      "id": "bar4",
+      "pattern": "X/2 D/4 D/2 D/2 X"
+    },
+    {
+      "id": "bar5",
+      "pattern": "X R/2 X/2 X R/2 X/2"
+    },
+    {
+      "id": "bar6",
+      "pattern": "X/2 X X X X/2"
+    },
+    {
+      "id": "bar7",
+      "pattern": "X/2 D/4 X/2 D/4 X/2 D/4 X"
+    },
+    {
+      "id": "bar8",
+      "pattern": "X/2 D/4 D/2 R/2 X/2 X"
+    }
+  ]
+}

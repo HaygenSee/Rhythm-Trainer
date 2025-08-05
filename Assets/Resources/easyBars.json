@@ -3,11 +3,7 @@
   "bars": [
     {
       "id": "bar1",
-      "pattern": "X X D/2 X"
-    },
-    {
-      "id": "bar1",
-      "pattern": "Q/2 D/2 X"
+      "pattern": "X X X X"
     },
     {
       "id": "bar2",
@@ -15,7 +11,7 @@
     },
     {
       "id": "bar3",
-      "pattern": "X. X/2 X X"
+      "pattern": "X X D/2 X"
     },
     {
       "id": "bar4",
@@ -23,26 +19,34 @@
     },
     {
       "id": "bar5",
-      "pattern": "X X X X"
+      "pattern": "X R X X"
     },
     {
       "id": "bar6",
-      "pattern": "D/2 X R X"
+      "pattern": "X X R X"
     },
     {
       "id": "bar7",
-      "pattern": "X R X R"
+      "pattern": "R X X X"
     },
     {
       "id": "bar8",
-      "pattern": "Q/2 D/2 X"
+      "pattern": "X X X R"
     },
     {
       "id": "bar9",
-      "pattern": "X X D/2 X"
+      "pattern": "Q/2 X X"
     },
     {
       "id": "bar10",
+      "pattern": "X Q/2 X"
+    },
+    {
+      "id": "bar11",
+      "pattern": "R X X D/2"
+    },
+    {
+      "id": "bar12",
       "pattern": "X R D/2 X"
     }
   ]
