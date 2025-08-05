@@ -32,7 +32,7 @@ public class UIManager : MonoBehaviour
 
     public void loadEasyLevel()
     {
-        SceneManager.LoadScene("easy");
+        SceneManager.LoadScene("Easy");
     }
 
     public void loadDefinitelyEasyLevel()

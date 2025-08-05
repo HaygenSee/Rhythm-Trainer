@@ -13,13 +13,13 @@ EditorBuildSettings:
     guid: 3d8d3f2d8e5c00140b8d371771f3d9b1
   - enabled: 1
     path: Assets/Scenes/Easy.unity
-    guid: a7efac3f0da73e7439004acd29203987
-  - enabled: 1
-    path: Assets/Scenes/Consistency Test.unity
-    guid: 85f58238a459c0e41af970de15c6d8a3
+    guid: 65898890b3cccdf4a8d8b019cc6ee4d5
   - enabled: 1
     path: Assets/Scenes/Intermediate.unity
     guid: 2be9627095a6d62408a6dc40611b0a80
+  - enabled: 1
+    path: Assets/Scenes/Consistency Test.unity
+    guid: 63c9277461972494b8bdb8f76e6030a1
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 2469267d91e276a4c9f3f3248df7bda7, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: de2d5c6a9d07ce341891da662b555713, type: 3}

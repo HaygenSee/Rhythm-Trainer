@@ -310,7 +310,7 @@ public class GameManager : MonoBehaviour
         else if (scene.name == "Tutorial")
         {
             isTutorial = true;
-            levelScoreKey = "Tutorial";
+            levelScoreKey = "tutorialHighscore";
         }
     }
 
