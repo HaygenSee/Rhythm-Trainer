@@ -32,8 +32,18 @@
     {
       "id": "bar8",
       "pattern": "R/2 D/4 R/2 R/4 X/4 R/2 D/4 R/2 R/4 X/4"
+    },
+    {
+      "id": "bar9",
+      "pattern": "R/2 X/2 T R/2 D/4 T"
+    },
+    {
+      "id": "bar10",
+      "pattern": "R/4 X/4 R/4 X/4 R/4 X/4 R/4 X/4 R/4 X/4 R/4 X/4 R/4 X/4 R/4 X/4"
+    },
+    {
+      "id": "bar11",
+      "pattern": "R/2 X/2 R/2 X/2 R/2 X/2 R/2 X/2"
     }
-
-
   ]
 }
